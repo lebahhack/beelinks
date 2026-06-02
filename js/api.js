@@ -2,7 +2,7 @@ const API_BASE =
 "https://api-biolink.lebahhack.workers.dev";
 
 /* =========================
-   AUTH HELPERS
+   STORAGE
 ========================= */
 
 function getToken() {
@@ -24,7 +24,16 @@ function getUsername() {
   );
 }
 
-function removeToken() {
+function setUsername(
+  username
+) {
+  localStorage.setItem(
+    "username",
+    username
+  );
+}
+
+function clearAuth() {
 
   localStorage.removeItem(
     "token"
@@ -41,8 +50,25 @@ function isLoggedIn() {
 }
 
 /* =========================
-   AVATAR
+   URL
 ========================= */
+
+function profileUrl() {
+
+  const username =
+    getUsername();
+
+  if (!username) {
+    return location.origin;
+  }
+
+  return (
+    location.origin +
+    "/" +
+    username
+  );
+
+}
 
 function avatarUrl(
   user
@@ -53,20 +79,6 @@ function avatarUrl(
     `${API_BASE}/avatar/${
       user?.username || "user"
     }`
-  );
-
-}
-
-/* =========================
-   PROFILE URL
-========================= */
-
-function profileUrl() {
-
-  return (
-    location.origin +
-    "/" +
-    getUsername()
   );
 
 }
@@ -87,16 +99,22 @@ async function api(
   if (
     !(options.body instanceof FormData)
   ) {
-    headers["Content-Type"] =
+
+    headers[
+      "Content-Type"
+    ] =
       "application/json";
+
   }
 
   const token =
     getToken();
 
   if (token) {
+
     headers.Authorization =
       `Bearer ${token}`;
+
   }
 
   const response =
@@ -184,13 +202,12 @@ async function login(
     data.token
   ) {
 
-    localStorage.setItem(
-      "username",
-      data.username
-    );
-
     setToken(
       data.token
+    );
+
+    setUsername(
+      data.username
     );
 
   }
@@ -216,7 +233,7 @@ async function logout() {
 
   }
 
-  removeToken();
+  clearAuth();
 
   location.href =
     "/login.html";
@@ -224,7 +241,15 @@ async function logout() {
 }
 
 async function me() {
-  return api("/me");
+
+  const data =
+    await api("/me");
+
+  return (
+    data.user ||
+    data
+  );
+
 }
 
 /* =========================
@@ -236,7 +261,7 @@ async function getProfile(
 ) {
 
   return api(
-    `/${username}`
+    `/@${username}`
   );
 
 }
@@ -318,12 +343,14 @@ async function deleteLink(
 }
 
 /* =========================
-   GUARD
+   AUTH GUARD
 ========================= */
 
 function requireAuth() {
 
-  if (!isLoggedIn()) {
+  if (
+    !isLoggedIn()
+  ) {
 
     location.href =
       "/login.html";
@@ -338,7 +365,9 @@ function requireAuth() {
 
 function guestOnly() {
 
-  if (isLoggedIn()) {
+  if (
+    isLoggedIn()
+  ) {
 
     location.href =
       "/dashboard.html";
@@ -349,6 +378,40 @@ function guestOnly() {
 
   return true;
 
+}
+
+/* =========================
+   PROFILE ACTION
+========================= */
+
+function openProfile() {
+
+  window.open(
+    profileUrl(),
+    "_blank"
+  );
+
+}
+
+async function copyProfileUrl() {
+
+  const ok =
+    await copyText(
+      profileUrl()
+    );
+
+  if (ok) {
+
+    alert(
+      "Link profil berhasil disalin"
+    );
+
+  }
+
+}
+
+async function copyMyProfile() {
+  return copyProfileUrl();
 }
 
 /* =========================
@@ -391,30 +454,15 @@ async function copyText(
 
     await navigator
       .clipboard
-      .writeText(text);
+      .writeText(
+        text
+      );
 
     return true;
 
   } catch {
 
     return false;
-
-  }
-
-}
-
-async function copyProfileUrl() {
-
-  const ok =
-    await copyText(
-      profileUrl()
-    );
-
-  if (ok) {
-
-    alert(
-      "Link profil berhasil disalin"
-    );
 
   }
 
