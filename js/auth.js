@@ -5,15 +5,15 @@
 const Auth = {
 
   token() {
-    return localStorage.getItem("token") || "";
+    return getToken();
   },
 
   username() {
-    return localStorage.getItem("username") || "";
+    return getUsername();
   },
 
   loggedIn() {
-    return !!this.token();
+    return isLoggedIn();
   },
 
   save(data = {}) {
@@ -54,61 +54,15 @@ const Auth = {
 
 function authHeaders() {
 
-  return {
-    Authorization:
-      `Bearer ${Auth.token()}`
-  };
+  const token =
+    Auth.token();
 
-}
-
-/* =========================
-   LOGOUT
-========================= */
-
-function logout() {
-
-  Auth.clear();
-
-  location.href =
-    "/login.html";
-
-}
-
-/* =========================
-   CHECK LOGIN
-========================= */
-
-function requireAuth() {
-
-  if (!Auth.loggedIn()) {
-
-    location.href =
-      "/login.html";
-
-    return false;
-
-  }
-
-  return true;
-
-}
-
-/* =========================
-   GUEST ONLY
-========================= */
-
-function guestOnly() {
-
-  if (Auth.loggedIn()) {
-
-    location.href =
-      "/dashboard.html";
-
-    return false;
-
-  }
-
-  return true;
+  return token
+    ? {
+        Authorization:
+          `Bearer ${token}`
+      }
+    : {};
 
 }
 
@@ -121,16 +75,18 @@ async function currentUser() {
   try {
 
     const data =
-      await api("/me", {
-        headers:
-          authHeaders()
-      });
+      await me();
 
-    return data.user || data;
+    return (
+      data.user ||
+      data
+    );
 
   } catch (err) {
 
-    console.error(err);
+    console.error(
+      err
+    );
 
     Auth.clear();
 
@@ -153,8 +109,7 @@ async function refreshUser() {
     await currentUser();
 
   if (
-    user &&
-    user.username
+    user?.username
   ) {
 
     localStorage.setItem(
@@ -172,7 +127,7 @@ async function refreshUser() {
    PROFILE URL
 ========================= */
 
-function profileUrl() {
+function myProfileUrl() {
 
   const username =
     Auth.username();
@@ -181,7 +136,11 @@ function profileUrl() {
     return location.origin;
   }
 
-  return `${location.origin}/@${username}`;
+  return (
+    location.origin +
+    "/" +
+    username
+  );
 
 }
 
@@ -189,10 +148,10 @@ function profileUrl() {
    OPEN PROFILE
 ========================= */
 
-function openProfile() {
+function openMyProfile() {
 
   window.open(
-    profileUrl(),
+    myProfileUrl(),
     "_blank"
   );
 
@@ -202,14 +161,14 @@ function openProfile() {
    COPY PROFILE URL
 ========================= */
 
-async function copyProfileUrl() {
+async function copyMyProfileUrl() {
 
   try {
 
     await navigator
       .clipboard
       .writeText(
-        profileUrl()
+        myProfileUrl()
       );
 
     alert(
@@ -219,7 +178,7 @@ async function copyProfileUrl() {
   } catch {
 
     alert(
-      "Gagal menyalin link"
+      myProfileUrl()
     );
 
   }
@@ -267,5 +226,15 @@ async function handleRegister(
     name,
     password
   );
+
+}
+
+/* =========================
+   LOGOUT BUTTON
+========================= */
+
+async function logoutUser() {
+
+  await logout();
 
 }
