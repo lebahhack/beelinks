@@ -86,14 +86,18 @@ function getProfileUsername() {
     "favicon.ico",
 
     "robots.txt",
-    "sitemap.xml"
+    "sitemap.xml",
+
+    "css",
+    "js",
+    "assets",
+
+    "api"
 
   ];
 
   if (
-    reserved.includes(
-      path
-    )
+    reserved.includes(path)
   ) {
 
     return null;
@@ -101,6 +105,27 @@ function getProfileUsername() {
   }
 
   return path;
+
+}
+
+/* =========================
+   AVATAR URL
+========================= */
+
+function avatarUrl(
+  profile
+) {
+
+  if (
+    profile.avatar &&
+    profile.avatar.trim()
+  ) {
+
+    return profile.avatar;
+
+  }
+
+  return `${API_BASE}/avatar/${profile.username}`;
 
 }
 
@@ -130,9 +155,7 @@ function renderProfile(
   if (avatar) {
 
     avatar.src =
-      avatarUrl(
-        profile
-      );
+      avatarUrl(profile);
 
     avatar.alt =
       profile.name ||
@@ -269,9 +292,7 @@ function updateSEO(
 
   updateMetaProperty(
     "og:image",
-    avatarUrl(
-      profile
-    )
+    avatarUrl(profile)
   );
 
   updateMetaProperty(
@@ -283,6 +304,125 @@ function updateSEO(
     "og:url",
     location.href
   );
+
+  updateMeta(
+    "twitter:card",
+    "summary_large_image"
+  );
+
+  updateMeta(
+    "twitter:title",
+    title
+  );
+
+  updateMeta(
+    "twitter:description",
+    description
+  );
+
+  updateMeta(
+    "twitter:image",
+    avatarUrl(profile)
+  );
+
+  updateCanonical();
+
+  updateSchema(
+    profile,
+    description
+  );
+
+}
+
+/* =========================
+   CANONICAL
+========================= */
+
+function updateCanonical() {
+
+  let canonical =
+    document.querySelector(
+      'link[rel="canonical"]'
+    );
+
+  if (!canonical) {
+
+    canonical =
+      document.createElement(
+        "link"
+      );
+
+    canonical.rel =
+      "canonical";
+
+    document.head.appendChild(
+      canonical
+    );
+
+  }
+
+  canonical.href =
+    location.href;
+
+}
+
+/* =========================
+   JSON-LD
+========================= */
+
+function updateSchema(
+  profile,
+  description
+) {
+
+  const schema = {
+
+    "@context":
+      "https://schema.org",
+
+    "@type":
+      "ProfilePage",
+
+    name:
+      profile.name ||
+      profile.username,
+
+    description,
+
+    url:
+      location.href,
+
+    image:
+      avatarUrl(profile)
+
+  };
+
+  let script =
+    document.getElementById(
+      "profile-schema"
+    );
+
+  if (!script) {
+
+    script =
+      document.createElement(
+        "script"
+      );
+
+    script.id =
+      "profile-schema";
+
+    script.type =
+      "application/ld+json";
+
+    document.head.appendChild(
+      script
+    );
+
+  }
+
+  script.textContent =
+    JSON.stringify(schema);
 
 }
 
@@ -375,18 +515,7 @@ function showNotFound() {
 
   document.body.innerHTML = `
 
-    <main
-      style="
-        min-height:100vh;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        flex-direction:column;
-        text-align:center;
-        padding:20px;
-        font-family:system-ui;
-      "
-    >
+    <main class="not-found">
 
       <h1>
         404
