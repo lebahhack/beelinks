@@ -59,10 +59,9 @@ async function loadProfile() {
 
 function getProfileUsername() {
 
-  // fallback lama
-  const u = new URLSearchParams(
-    location.search
-  ).get("u");
+  // kompatibel URL lama
+  const u = new URLSearchParams(location.search)
+    .get("u");
 
   if (u) {
     return u.toLowerCase();
@@ -80,11 +79,7 @@ function getProfileUsername() {
     "dashboard",
     "profile",
     "profile.html",
-    "admin",
-    "about",
-    "contact",
-    "privacy",
-    "terms",
+    "404.html",
     "favicon.ico",
     "robots.txt",
     "sitemap.xml"
