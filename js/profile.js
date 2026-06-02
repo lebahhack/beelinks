@@ -59,11 +59,18 @@ async function loadProfile() {
 
 function getProfileUsername() {
 
-  const path =
-    location.pathname
-      .replace(/^\/+/, "")
-      .replace(/\/+$/, "")
-      .toLowerCase();
+  const u =
+    new URLSearchParams(
+      location.search
+    ).get("u");
+
+  if (u) {
+    return u.toLowerCase();
+  }
+
+  return null;
+
+}
 
   const reserved = [
 
