@@ -1,0 +1,188 @@
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard{
+padding:40px 0 60px
+}
+
+.dashboard-grid{
+display:grid;
+grid-template-columns:320px 1fr;
+gap:30px;
+align-items:start
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar{
+position:sticky;
+top:20px
+}
+
+.profile-card{
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:18px;
+padding:24px;
+text-align:center
+}
+
+.avatar-preview{
+width:100px;
+height:100px;
+border-radius:999px;
+object-fit:cover;
+margin:0 auto 16px;
+border:3px solid #f1f5f9
+}
+
+#profile-username{
+font-size:20px;
+font-weight:700;
+margin-bottom:6px
+}
+
+#sidebar-username{
+color:#64748b;
+font-size:14px
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats-box{
+margin-top:20px;
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:18px;
+padding:18px
+}
+
+.stats-box strong{
+font-size:18px
+}
+
+/* =========================
+   CONTENT
+========================= */
+
+.content{
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:18px;
+padding:30px
+}
+
+.content hr{
+border:none;
+height:1px;
+background:#e5e7eb;
+margin:32px 0
+}
+
+/* =========================
+   LINKS
+========================= */
+
+#links-list{
+display:flex;
+flex-direction:column;
+gap:12px
+}
+
+.link-item{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:16px;
+padding:16px;
+border:1px solid #e5e7eb;
+border-radius:14px;
+background:#fafafa
+}
+
+.link-content{
+flex:1;
+overflow:hidden
+}
+
+.link-content strong{
+display:block;
+margin-bottom:4px;
+word-break:break-word
+}
+
+.link-content small{
+display:block;
+color:#64748b;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
+
+.link-item button{
+padding:10px 14px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+background:#ef4444;
+color:#fff;
+font-size:14px;
+font-weight:600
+}
+
+.link-item button:hover{
+opacity:.9
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+#links-list p{
+text-align:center;
+color:#64748b;
+padding:30px 10px
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+.dashboard-grid{
+grid-template-columns:1fr
+}
+
+.sidebar{
+position:static
+}
+
+.content{
+padding:20px
+}
+
+}
+
+@media(max-width:640px){
+
+.link-item{
+flex-direction:column;
+align-items:flex-start
+}
+
+.link-item button{
+width:100%
+}
+
+.avatar-preview{
+width:88px;
+height:88px
+}
+
+}
