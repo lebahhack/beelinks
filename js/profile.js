@@ -18,34 +18,33 @@ async function loadProfile() {
     const username =
       getProfileUsername();
 
+    console.log("pathname =", location.pathname);
+    console.log("username =", username);
+
     if (!username) {
 
       showNotFound();
-
       return;
 
     }
 
     const profile =
-      await getProfile(
-        username
-      );
+      await getProfile(username);
+
+    console.log("profile =", profile);
 
     if (!profile) {
 
       showNotFound();
-
       return;
 
     }
 
-    renderProfile(
-      profile
-    );
+    renderProfile(profile);
 
   } catch (err) {
 
-    console.error(err);
+    console.error("ERROR:", err);
 
     showNotFound();
 
