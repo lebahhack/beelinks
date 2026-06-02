@@ -218,8 +218,8 @@ function renderLinks(
     a.className =
       "profile-link";
 
-    a.href =
-      `${API_BASE}/r/${profile.username}/${link.id}`;
+a.href =
+  `/r/${profile.username}/${link.id}`;
 
     a.target =
       "_blank";
