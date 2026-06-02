@@ -5,13 +5,20 @@ export async function onRequest(context) {
 
   // proxy redirect link ke worker
   if (
-    url.pathname.startsWith("/r/")
-  ) {
-    return fetch(
-      "https://api-biolink.lebahhack.workers.dev" +
-      url.pathname
-    );
-  }
+  url.pathname.startsWith("/r/")
+) {
+
+  const response = await fetch(
+    "https://api-biolink.lebahhack.workers.dev" +
+    url.pathname,
+    {
+      redirect: "manual"
+    }
+  );
+
+  return response;
+
+}
 
   // biarkan file statis lewat
   if (
