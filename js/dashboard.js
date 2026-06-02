@@ -1,408 +1,427 @@
 /* =========================
-DASHBOARD
+   DASHBOARD
 ========================= */
 
 let profile = null;
 
 /* =========================
-INIT
+   INIT
 ========================= */
 
 document.addEventListener(
-"DOMContentLoaded",
-initDashboard
+  "DOMContentLoaded",
+  initDashboard
 );
 
 async function initDashboard() {
 
-if (!requireAuth()) {
-return;
-}
+  if (!requireAuth()) {
+    return;
+  }
 
-try {
+  try {
 
-```
-profile =
-  await currentUser();
+    profile = await me();
 
-renderProfile();
+    console.log(
+      "PROFILE:",
+      profile
+    );
 
-renderLinks();
-```
+    if (!profile) {
+      throw new Error(
+        "Profile tidak ditemukan"
+      );
+    }
 
-} catch (err) {
+    renderProfile();
+    renderLinks();
 
-```
-console.error(err);
-```
+  } catch (err) {
 
-}
+    console.error(err);
+
+    alert(
+      err.message ||
+      "Gagal memuat dashboard"
+    );
+
+  }
 
 }
 
 /* =========================
-PROFILE
+   PROFILE
 ========================= */
 
 function renderProfile() {
 
-if (!profile) {
-return;
-}
+  if (!profile) {
+    return;
+  }
 
-const name =
-document.getElementById(
-"profile-name"
-);
+  // form
 
-const bio =
-document.getElementById(
-"profile-bio"
-);
+  const name =
+    document.getElementById(
+      "profile-name"
+    );
 
-const avatar =
-document.getElementById(
-"profile-avatar"
-);
+  const bio =
+    document.getElementById(
+      "profile-bio"
+    );
 
-if (name) {
-name.value =
-profile.name || "";
-}
+  const avatar =
+    document.getElementById(
+      "profile-avatar"
+    );
 
-if (bio) {
-bio.value =
-profile.bio || "";
-}
+  if (name) {
+    name.value =
+      profile.name || "";
+  }
 
-if (avatar) {
-avatar.value =
-profile.avatar || "";
-}
+  if (bio) {
+    bio.value =
+      profile.bio || "";
+  }
+
+  if (avatar) {
+    avatar.value =
+      profile.avatar || "";
+  }
+
+  // sidebar
+
+  const avatarPreview =
+    document.getElementById(
+      "avatar-preview"
+    );
+
+  const namePreview =
+    document.getElementById(
+      "profile-name-preview"
+    );
+
+  const usernamePreview =
+    document.getElementById(
+      "sidebar-username"
+    );
+
+  const totalLinks =
+    document.getElementById(
+      "total-links"
+    );
+
+  if (avatarPreview) {
+
+    avatarPreview.src =
+      profile.avatar ||
+      `${API_BASE}/avatar/${profile.username}`;
+
+  }
+
+  if (namePreview) {
+
+    namePreview.textContent =
+      profile.name ||
+      profile.username;
+
+  }
+
+  if (usernamePreview) {
+
+    usernamePreview.textContent =
+      "@" +
+      profile.username;
+
+  }
+
+  if (totalLinks) {
+
+    totalLinks.textContent =
+      (
+        profile.links || []
+      ).length;
+
+  }
 
 }
 
 async function saveProfile() {
 
-try {
+  try {
 
-```
-const payload = {
+    const payload = {
 
-  name:
-    document
-      .getElementById(
-        "profile-name"
-      )
-      .value
-      .trim(),
+      name:
+        document
+          .getElementById(
+            "profile-name"
+          )
+          .value
+          .trim(),
 
-  bio:
-    document
-      .getElementById(
-        "profile-bio"
-      )
-      .value
-      .trim(),
+      bio:
+        document
+          .getElementById(
+            "profile-bio"
+          )
+          .value
+          .trim(),
 
-  avatar:
-    document
-      .getElementById(
-        "profile-avatar"
-      )
-      .value
-      .trim()
+      avatar:
+        document
+          .getElementById(
+            "profile-avatar"
+          )
+          .value
+          .trim()
 
-};
+    };
 
-await updateProfile(
-  payload
-);
+    await updateProfile(
+      payload
+    );
 
-profile = {
-  ...profile,
-  ...payload
-};
+    profile = {
+      ...profile,
+      ...payload
+    };
 
-alert(
-  "Profil berhasil disimpan"
-);
-```
+    renderProfile();
 
-} catch (err) {
+    alert(
+      "Profil berhasil disimpan"
+    );
 
-```
-alert(
-  err.message ||
-  "Gagal menyimpan profil"
-);
-```
+  } catch (err) {
 
-}
+    alert(
+      err.message ||
+      "Gagal menyimpan profil"
+    );
+
+  }
 
 }
 
 /* =========================
-LINKS
+   LINKS
 ========================= */
 
 function renderLinks() {
 
-const container =
-document.getElementById(
-"links-list"
-);
+  const container =
+    document.getElementById(
+      "links-list"
+    );
 
-if (!container) {
-return;
-}
+  if (!container) {
+    return;
+  }
 
-const links =
-profile?.links || [];
+  const links =
+    profile?.links || [];
 
-container.innerHTML = "";
+  container.innerHTML = "";
 
-if (!links.length) {
+  const totalLinks =
+    document.getElementById(
+      "total-links"
+    );
 
-```
-container.innerHTML = `
-  <p>
-    Belum ada link
-  </p>
-`;
+  if (totalLinks) {
 
-return;
-```
+    totalLinks.textContent =
+      links.length;
 
-}
+  }
 
-links.forEach(link => {
+  if (!links.length) {
 
-```
-const item =
-  document.createElement(
-    "div"
-  );
+    container.innerHTML = `
+      <p>Belum ada link</p>
+    `;
 
-item.className =
-  "link-item";
+    return;
 
-item.innerHTML = `
-  <div class="link-content">
+  }
 
-    <strong>
-      ${escapeHtml(link.title)}
-    </strong>
+  links.forEach(link => {
 
-    <small>
-      ${escapeHtml(link.url)}
-    </small>
+    const item =
+      document.createElement(
+        "div"
+      );
 
-  </div>
+    item.className =
+      "link-item";
 
-  <button
-    class="btn btn-danger"
-    onclick="removeLink('${link.id}')">
+    item.innerHTML = `
+      <div class="link-content">
 
-    Hapus
+        <strong>
+          ${escapeHtml(link.title)}
+        </strong>
 
-  </button>
-`;
+        <small>
+          ${escapeHtml(link.url)}
+        </small>
 
-container.appendChild(
-  item
-);
-```
+      </div>
 
-});
+      <button
+        class="btn btn-danger"
+        onclick="removeLink('${link.id}')">
 
-}
+        Hapus
 
-async function addNewLink() {
+      </button>
+    `;
 
-const title =
-document
-.getElementById(
-"link-title"
-)
-.value
-.trim();
-
-const url =
-document
-.getElementById(
-"link-url"
-)
-.value
-.trim();
-
-if (!title) {
-
-```
-alert(
-  "Judul wajib diisi"
-);
-
-return;
-```
-
-}
-
-if (!url) {
-
-```
-alert(
-  "URL wajib diisi"
-);
-
-return;
-```
-
-}
-
-try {
-
-```
-const result =
-  await addLink(
-    title,
-    url
-  );
-
-if (
-  result.links
-) {
-  profile.links =
-    result.links;
-} else {
-
-  profile.links.push({
-
-    id:
-      crypto.randomUUID(),
-
-    title,
-
-    url
+    container.appendChild(
+      item
+    );
 
   });
 
 }
 
-renderLinks();
+async function addNewLink() {
 
-document.getElementById(
-  "link-title"
-).value = "";
+  const title =
+    document
+      .getElementById(
+        "link-title"
+      )
+      .value
+      .trim();
 
-document.getElementById(
-  "link-url"
-).value = "";
-```
+  const url =
+    document
+      .getElementById(
+        "link-url"
+      )
+      .value
+      .trim();
 
-} catch (err) {
+  if (!title) {
+    alert(
+      "Judul wajib diisi"
+    );
+    return;
+  }
 
-```
-alert(
-  err.message ||
-  "Gagal menambah link"
-);
-```
+  if (!url) {
+    alert(
+      "URL wajib diisi"
+    );
+    return;
+  }
 
-}
+  try {
+
+    await addLink(
+      title,
+      url
+    );
+
+    // reload profile dari server
+    profile =
+      await me();
+
+    renderProfile();
+    renderLinks();
+
+    document.getElementById(
+      "link-title"
+    ).value = "";
+
+    document.getElementById(
+      "link-url"
+    ).value = "";
+
+  } catch (err) {
+
+    console.error(err);
+
+    alert(
+      err.message ||
+      "Gagal menambah link"
+    );
+
+  }
 
 }
 
 async function removeLink(id) {
 
-if (
-!confirm(
-"Hapus link ini?"
-)
-) {
-return;
-}
+  if (
+    !confirm(
+      "Hapus link ini?"
+    )
+  ) {
+    return;
+  }
 
-try {
+  try {
 
-```
-const result =
-  await deleteLink(id);
+    await deleteLink(id);
 
-if (
-  result.links
-) {
+    profile =
+      await me();
 
-  profile.links =
-    result.links;
+    renderProfile();
+    renderLinks();
 
-} else {
+  } catch (err) {
 
-  profile.links =
-    profile.links.filter(
-      link =>
-        link.id !== id
+    alert(
+      err.message ||
+      "Gagal menghapus link"
     );
 
-}
-
-renderLinks();
-```
-
-} catch (err) {
-
-```
-alert(
-  err.message ||
-  "Gagal menghapus link"
-);
-```
-
-}
+  }
 
 }
 
 /* =========================
-PROFILE URL
+   PROFILE URL
 ========================= */
 
 async function copyMyProfile() {
 
-const url =
-profileUrl();
+  const url =
+    profileUrl();
 
-try {
+  try {
 
-```
-await navigator
-  .clipboard
-  .writeText(
-    url
-  );
+    await navigator
+      .clipboard
+      .writeText(url);
 
-alert(
-  "Link profil disalin"
-);
-```
+    alert(
+      "Link profil disalin"
+    );
 
-} catch {
+  } catch {
 
-```
-prompt(
-  "Salin link profil:",
-  url
-);
-```
+    prompt(
+      "Salin link profil:",
+      url
+    );
 
-}
+  }
 
 }
 
 function openProfile() {
 
-window.open(
-profileUrl(),
-"_blank"
-);
+  window.open(
+    profileUrl(),
+    "_blank"
+  );
 
 }
