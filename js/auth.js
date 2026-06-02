@@ -19,30 +19,25 @@ const Auth = {
   save(data = {}) {
 
     if (data.token) {
-      localStorage.setItem(
-        "token",
+      setToken(
         data.token
       );
     }
 
     if (data.username) {
+
       localStorage.setItem(
         "username",
         data.username
       );
+
     }
 
   },
 
   clear() {
 
-    localStorage.removeItem(
-      "token"
-    );
-
-    localStorage.removeItem(
-      "username"
-    );
+    clearAuth();
 
   }
 
@@ -74,13 +69,21 @@ async function currentUser() {
 
   try {
 
-    const data =
+    const user =
       await me();
 
-    return (
-      data.user ||
-      data
-    );
+    if (
+      user?.username
+    ) {
+
+      localStorage.setItem(
+        "username",
+        user.username
+      );
+
+    }
+
+    return user;
 
   } catch (err) {
 
@@ -105,21 +108,7 @@ async function currentUser() {
 
 async function refreshUser() {
 
-  const user =
-    await currentUser();
-
-  if (
-    user?.username
-  ) {
-
-    localStorage.setItem(
-      "username",
-      user.username
-    );
-
-  }
-
-  return user;
+  return await currentUser();
 
 }
 
@@ -129,18 +118,7 @@ async function refreshUser() {
 
 function myProfileUrl() {
 
-  const username =
-    Auth.username();
-
-  if (!username) {
-    return location.origin;
-  }
-
-  return (
-    location.origin +
-    "/" +
-    username
-  );
+  return profileUrl();
 
 }
 
@@ -163,19 +141,18 @@ function openMyProfile() {
 
 async function copyMyProfileUrl() {
 
-  try {
+  const ok =
+    await copyText(
+      myProfileUrl()
+    );
 
-    await navigator
-      .clipboard
-      .writeText(
-        myProfileUrl()
-      );
+  if (ok) {
 
     alert(
       "Link profil berhasil disalin"
     );
 
-  } catch {
+  } else {
 
     alert(
       myProfileUrl()
@@ -230,11 +207,49 @@ async function handleRegister(
 }
 
 /* =========================
-   LOGOUT BUTTON
+   LOGOUT
 ========================= */
 
 async function logoutUser() {
 
   await logout();
+
+}
+
+/* =========================
+   GUARD
+========================= */
+
+function requireLogin() {
+
+  if (
+    !Auth.loggedIn()
+  ) {
+
+    location.href =
+      "/login.html";
+
+    return false;
+
+  }
+
+  return true;
+
+}
+
+function guestOnlyPage() {
+
+  if (
+    Auth.loggedIn()
+  ) {
+
+    location.href =
+      "/dashboard.html";
+
+    return false;
+
+  }
+
+  return true;
 
 }
