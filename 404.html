@@ -1,0 +1,19 @@
+<script>
+const path =
+location.pathname
+.replace(/^\/+/,"")
+.replace(/\/+$/,"");
+
+const reserved = [
+"",
+"login",
+"register",
+"dashboard"
+];
+
+if (!reserved.includes(path)) {
+  location.replace(
+    `/profile.html?u=${encodeURIComponent(path)}`
+  );
+}
+</script>
