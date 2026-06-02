@@ -1,9 +1,13 @@
 <!DOCTYPE html>
+
 <html lang="id">
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
 
 <title>BeeLinks</title>
 
@@ -13,7 +17,7 @@ content="Semua link dalam satu halaman">
 
 <meta
 property="og:type"
-content="website">
+content="profile">
 
 <meta
 property="og:title"
@@ -22,6 +26,18 @@ content="BeeLinks">
 <meta
 property="og:description"
 content="Semua link dalam satu halaman">
+
+<meta
+property="og:image"
+content="/assets/avatar.png">
+
+<meta
+name="robots"
+content="index,follow">
+
+<link
+rel="canonical"
+href="">
 
 <link
 rel="stylesheet"
@@ -32,11 +48,14 @@ href="/css/style.css">
 
 <main class="profile">
 
+<div class="profile-card">
+
 <img
 id="profile-avatar"
 class="profile-avatar"
 src="/assets/avatar.png"
-alt="Avatar">
+alt="Avatar"
+loading="eager">
 
 <h1
 id="profile-name"
@@ -54,6 +73,8 @@ Mohon tunggu...
 
 </p>
 
+</div>
+
 <div
 id="profile-links"
 class="profile-links">
@@ -64,11 +85,8 @@ Memuat link...
 
 </div>
 
-<div
-style="
-margin-top:30px;
-text-align:center;
-">
+<footer
+class="profile-footer">
 
 <a
 href="/"
@@ -78,11 +96,21 @@ Buat Halaman Seperti Ini
 
 </a>
 
-</div>
+</footer>
 
 </main>
 
+<script>
+document
+.querySelector(
+'link[rel="canonical"]'
+)
+.href =
+location.href;
+</script>
+
 <script src="/js/api.js"></script>
+
 <script src="/js/profile.js"></script>
 
 </body>
