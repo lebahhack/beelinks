@@ -59,60 +59,42 @@ async function loadProfile() {
 
 function getProfileUsername() {
 
-  const u =
-    new URLSearchParams(
-      location.search
-    ).get("u");
+  // fallback lama
+  const u = new URLSearchParams(
+    location.search
+  ).get("u");
 
   if (u) {
     return u.toLowerCase();
   }
 
-  return null;
-
-}
+  const path = location.pathname
+    .replace(/^\/+/, "")
+    .replace(/\/+$/, "")
+    .toLowerCase();
 
   const reserved = [
-
     "",
-
     "login",
     "register",
-
     "dashboard",
     "profile",
-
+    "profile.html",
     "admin",
-
     "about",
     "contact",
-
     "privacy",
     "terms",
-
     "favicon.ico",
-
     "robots.txt",
-    "sitemap.xml",
-
-    "css",
-    "js",
-    "assets",
-
-    "api"
-
+    "sitemap.xml"
   ];
 
-  if (
-    reserved.includes(path)
-  ) {
-
+  if (reserved.includes(path)) {
     return null;
-
   }
 
   return path;
-
 }
 
 /* =========================
