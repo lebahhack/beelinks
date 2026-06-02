@@ -1,24 +1,10 @@
-<script>
-const path = location.pathname
-  .replace(/^\/+/,"")
-  .replace(/\/+$/,"");
-
-const reserved = [
-  "",
-  "login",
-  "register",
-  "dashboard",
-  "profile.html",
-  "404.html"
-];
-
-if (
-  path &&
-  !reserved.includes(path)
-) {
-  location.replace(
-    "/profile.html?u=" +
-    encodeURIComponent(path)
-  );
-}
-</script>
+<!doctype html>
+<html>
+<head>
+  <title>404</title>
+</head>
+<body>
+  <h1>404</h1>
+  <p>Halaman tidak ditemukan.</p>
+</body>
+</html>
