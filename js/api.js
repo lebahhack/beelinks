@@ -25,35 +25,43 @@ function isLoggedIn() {
    REQUEST
 ========================= */
 
-async function api(path, options = {}) {
+async function api(
+  path,
+  options = {}
+) {
 
   const headers = {
-    "Content-Type": "application/json",
+    "Content-Type":
+      "application/json",
     ...(options.headers || {})
   };
 
   const token = getToken();
 
   if (token) {
-    headers.Authorization = `Bearer ${token}`;
+    headers.Authorization =
+      `Bearer ${token}`;
   }
 
-  const response = await fetch(
-    `${API_BASE}${path}`,
-    {
-      ...options,
-      headers
-    }
-  );
+  const response =
+    await fetch(
+      API_BASE + path,
+      {
+        ...options,
+        headers
+      }
+    );
 
   let data;
 
   try {
-    data = await response.json();
+    data =
+      await response.json();
   } catch {
     data = {
       success: false,
-      message: "Invalid server response"
+      message:
+        "Invalid server response"
     };
   }
 
@@ -77,14 +85,17 @@ async function register(
   password
 ) {
 
-  return api("/register", {
-    method: "POST",
-    body: JSON.stringify({
-      username,
-      name,
-      password
-    })
-  });
+  return api(
+    "/register",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        username,
+        name,
+        password
+      })
+    }
+  );
 
 }
 
@@ -93,40 +104,36 @@ async function login(
   password
 ) {
 
-  const data = await api(
-    "/login",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        password
-      })
-    }
-  );
+  const data =
+    await api(
+      "/login",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password
+        })
+      }
+    );
 
-  if (data.token) {
-    setToken(data.token);
+  if (
+    data.success &&
+    data.token
+  ) {
+    setToken(
+      data.token
+    );
   }
 
   return data;
 }
 
-async function logout() {
-
-  try {
-
-    await api("/logout", {
-      method: "POST"
-    });
-
-  } catch (err) {
-    console.error(err);
-  }
+function logout() {
 
   removeToken();
 
   location.href =
-  "/login.html";
+    "/login.html";
 
 }
 
@@ -143,7 +150,7 @@ async function getProfile(
 ) {
 
   return api(
-    `/profile/${username}`
+    `/@${username}`
   );
 
 }
@@ -156,7 +163,9 @@ async function updateProfile(
     "/profile/update",
     {
       method: "POST",
-      body: JSON.stringify(payload)
+      body: JSON.stringify(
+        payload
+      )
     }
   );
 
@@ -172,30 +181,10 @@ async function addLink(
 ) {
 
   return api(
-    "/link/add",
+    "/links/add",
     {
       method: "POST",
       body: JSON.stringify({
-        title,
-        url
-      })
-    }
-  );
-
-}
-
-async function updateLink(
-  id,
-  title,
-  url
-) {
-
-  return api(
-    "/link/update",
-    {
-      method: "POST",
-      body: JSON.stringify({
-        id,
         title,
         url
       })
@@ -209,27 +198,13 @@ async function deleteLink(
 ) {
 
   return api(
-    "/link/delete",
+    "/links/delete",
     {
       method: "POST",
       body: JSON.stringify({
         id
       })
     }
-  );
-
-}
-
-/* =========================
-   ANALYTICS
-========================= */
-
-async function getStats(
-  username
-) {
-
-  return api(
-    `/stats/${username}`
   );
 
 }
@@ -243,7 +218,7 @@ function requireAuth() {
   if (!isLoggedIn()) {
 
     location.href =
-    "/login.html";
+      "/login.html";
 
     return false;
   }
@@ -256,13 +231,17 @@ function requireAuth() {
    UTIL
 ========================= */
 
-function escapeHtml(text) {
+function escapeHtml(
+  text
+) {
 
   const div =
-  document.createElement("div");
+    document.createElement(
+      "div"
+    );
 
   div.textContent =
-  text || "";
+    text || "";
 
   return div.innerHTML;
 
