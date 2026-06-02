@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Daftar - BeeLinks</title>
+
+<meta name="description"
+content="Buat akun BeeLinks gratis dan bagikan semua link Anda dalam satu halaman.">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box
+}
+
+body{
+font-family:system-ui,sans-serif;
+background:#f8fafc;
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.card{
+width:100%;
+max-width:460px;
+background:#fff;
+border:1px solid #e5e7eb;
+border-radius:16px;
+padding:30px
+}
+
+.logo{
+text-align:center;
+font-size:28px;
+font-weight:700;
+margin-bottom:10px
+}
+
+.subtitle{
+text-align:center;
+color:#64748b;
+margin-bottom:25px
+}
+
+.form-group{
+margin-bottom:15px
+}
+
+label{
+display:block;
+margin-bottom:6px;
+font-weight:600
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #d1d5db;
+border-radius:10px;
+font-size:15px
+}
+
+input:focus{
+outline:none;
+border-color:#111827
+}
+
+small{
+display:block;
+margin-top:6px;
+color:#64748b
+}
+
+button{
+width:100%;
+padding:13px;
+border:none;
+border-radius:10px;
+background:#111827;
+color:#fff;
+font-size:15px;
+font-weight:600;
+cursor:pointer
+}
+
+button:hover{
+opacity:.95
+}
+
+.message{
+margin-top:15px;
+padding:12px;
+border-radius:10px;
+display:none
+}
+
+.error{
+background:#fee2e2;
+color:#991b1b
+}
+
+.success{
+background:#dcfce7;
+color:#166534
+}
+
+.footer{
+margin-top:20px;
+text-align:center;
+font-size:14px
+}
+
+.footer a{
+text-decoration:none;
+font-weight:600
+}
+</style>
+
+</head>
+<body>
+
+<div class="card">
+
+<div class="logo">BeeLinks</div>
+
+<p class="subtitle">
+Buat akun gratis dalam beberapa detik
+</p>
+
+<form id="registerForm">
+
+<div class="form-group">
+<label>Username</label>
+
+<input
+type="text"
+id="username"
+required
+minlength="3"
+maxlength="30"
+placeholder="contoh: andi">
+
+<small>
+URL profil Anda:
+beelinks.pages.dev/username
+</small>
+</div>
+
+<div class="form-group">
+<label>Nama</label>
+
+<input
+type="text"
+id="name"
+required
+maxlength="100"
+placeholder="Nama Lengkap">
+</div>
+
+<div class="form-group">
+<label>Password</label>
+
+<input
+type="password"
+id="password"
+required
+minlength="6"
+placeholder="Minimal 6 karakter">
+</div>
+
+<div class="form-group">
+<label>Konfirmasi Password</label>
+
+<input
+type="password"
+id="confirmPassword"
+required
+placeholder="Ulangi password">
+</div>
+
+<button type="submit">
+Buat Akun
+</button>
+
+</form>
+
+<div id="message" class="message"></div>
+
+<div class="footer">
+Sudah punya akun?
+<a href="/login.html">
+Login
+</a>
+</div>
+
+</div>
+
+<script>
+
+const API =
+"https://api-biolink.lebahhack.workers.dev";
+
+const form =
+document.getElementById("registerForm");
+
+const message =
+document.getElementById("message");
+
+function showMessage(text,type){
+
+message.style.display="block";
+message.className=`message ${type}`;
+message.textContent=text;
+
+}
+
+function cleanUsername(username){
+
+return username
+.toLowerCase()
+.replace(/[^a-z0-9_-]/g,"");
+
+}
+
+form.addEventListener(
+"submit",
+async(e)=>{
+
+e.preventDefault();
+
+const username =
+cleanUsername(
+document.getElementById("username").value
+);
+
+const name =
+document.getElementById("name").value.trim();
+
+const password =
+document.getElementById("password").value;
+
+const confirmPassword =
+document.getElementById("confirmPassword").value;
+
+if(password !== confirmPassword){
+
+showMessage(
+"Konfirmasi password tidak cocok",
+"error"
+);
+
+return;
+
+}
+
+try{
+
+const res = await fetch(
+`${API}/register`,
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+username,
+name,
+password
+})
+}
+);
+
+const data =
+await res.json();
+
+if(!res.ok){
+
+showMessage(
+data.message || "Registrasi gagal",
+"error"
+);
+
+return;
+
+}
+
+showMessage(
+"Akun berhasil dibuat. Mengalihkan ke login...",
+"success"
+);
+
+setTimeout(()=>{
+
+location.href =
+"/login.html";
+
+},1500);
+
+}catch(err){
+
+showMessage(
+"Gagal terhubung ke server",
+"error"
+);
+
+}
+
+});
+</script>
+
+</body>
+</html>
