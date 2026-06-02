@@ -395,6 +395,64 @@ async function removeLink(id) {
 
 }
 
+
+
+
+
+async function editLink(id) {
+
+  const link =
+    profile.links.find(
+      item => item.id === id
+    );
+
+  if (!link) return;
+
+  const title =
+    prompt(
+      "Judul Link",
+      link.title
+    );
+
+  if (title === null) {
+    return;
+  }
+
+  const url =
+    prompt(
+      "URL Link",
+      link.url
+    );
+
+  if (url === null) {
+    return;
+  }
+
+  try {
+
+    await updateLink(
+      id,
+      title,
+      url,
+      true
+    );
+
+    profile =
+      await me();
+
+    renderLinks();
+
+  } catch (err) {
+
+    alert(
+      err.message ||
+      "Gagal update link"
+    );
+
+  }
+
+}
+
 /* =========================
    PROFILE URL
 ========================= */
