@@ -14,7 +14,11 @@ content="Kelola profil dan link BeeLinks Anda.">
 <link
 rel="stylesheet"
 href="/css/style.css">
-
+<script>
+if (!localStorage.getItem("token")) {
+  location.href = "/login.html";
+}
+</script>
 </head>
 <body>
 
