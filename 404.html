@@ -1,15 +1,24 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<title>404 - Halaman Tidak Ditemukan</title>
-</head>
-<body>
+<script>
+const path = location.pathname
+  .replace(/^\/+/,"")
+  .replace(/\/+$/,"");
 
-<h1>404</h1>
-<p>Halaman tidak ditemukan.</p>
+const reserved = [
+  "",
+  "login",
+  "register",
+  "dashboard",
+  "profile.html",
+  "404.html"
+];
 
-<a href="/">Kembali ke Beranda</a>
-
-</body>
-</html>
+if (
+  path &&
+  !reserved.includes(path)
+) {
+  location.replace(
+    "/profile.html?u=" +
+    encodeURIComponent(path)
+  );
+}
+</script>
