@@ -2,7 +2,7 @@ const API_BASE =
 "https://api-biolink.lebahhack.workers.dev";
 
 /* =========================
-   TOKEN
+   AUTH HELPERS
 ========================= */
 
 function getToken() {
@@ -10,15 +10,65 @@ function getToken() {
 }
 
 function setToken(token) {
-  localStorage.setItem("token", token);
+  localStorage.setItem(
+    "token",
+    token
+  );
+}
+
+function getUsername() {
+  return (
+    localStorage.getItem(
+      "username"
+    ) || ""
+  );
 }
 
 function removeToken() {
-  localStorage.removeItem("token");
+
+  localStorage.removeItem(
+    "token"
+  );
+
+  localStorage.removeItem(
+    "username"
+  );
+
 }
 
 function isLoggedIn() {
   return !!getToken();
+}
+
+/* =========================
+   AVATAR
+========================= */
+
+function avatarUrl(
+  user
+) {
+
+  return (
+    user?.avatar ||
+    `${API_BASE}/avatar/${
+      user?.username || "user"
+    }`
+  );
+
+}
+
+/* =========================
+   PROFILE URL
+========================= */
+
+function profileUrl() {
+
+  return (
+    location.origin +
+    "/" +
+    getUsername()
+  );
+
 }
 
 /* =========================
@@ -31,12 +81,18 @@ async function api(
 ) {
 
   const headers = {
-    "Content-Type":
-      "application/json",
     ...(options.headers || {})
   };
 
-  const token = getToken();
+  if (
+    !(options.body instanceof FormData)
+  ) {
+    headers["Content-Type"] =
+      "application/json";
+  }
+
+  const token =
+    getToken();
 
   if (token) {
     headers.Authorization =
@@ -55,24 +111,31 @@ async function api(
   let data;
 
   try {
+
     data =
       await response.json();
+
   } catch {
+
     data = {
       success: false,
       message:
         "Invalid server response"
     };
+
   }
 
   if (!response.ok) {
+
     throw new Error(
       data.message ||
       "Request failed"
     );
+
   }
 
   return data;
+
 }
 
 /* =========================
@@ -120,15 +183,38 @@ async function login(
     data.success &&
     data.token
   ) {
+
+    localStorage.setItem(
+      "username",
+      data.username
+    );
+
     setToken(
       data.token
     );
+
   }
 
   return data;
+
 }
 
-function logout() {
+async function logout() {
+
+  try {
+
+    await api(
+      "/logout",
+      {
+        method: "POST"
+      }
+    );
+
+  } catch (e) {
+
+    console.error(e);
+
+  }
 
   removeToken();
 
@@ -150,7 +236,7 @@ async function getProfile(
 ) {
 
   return api(
-    `/@${username}`
+    `/${username}`
   );
 
 }
@@ -193,6 +279,28 @@ async function addLink(
 
 }
 
+async function updateLink(
+  id,
+  title,
+  url,
+  active = true
+) {
+
+  return api(
+    "/links/update",
+    {
+      method: "POST",
+      body: JSON.stringify({
+        id,
+        title,
+        url,
+        active
+      })
+    }
+  );
+
+}
+
 async function deleteLink(
   id
 ) {
@@ -221,6 +329,22 @@ function requireAuth() {
       "/login.html";
 
     return false;
+
+  }
+
+  return true;
+
+}
+
+function guestOnly() {
+
+  if (isLoggedIn()) {
+
+    location.href =
+      "/dashboard.html";
+
+    return false;
+
   }
 
   return true;
@@ -256,5 +380,42 @@ function formatNumber(
   ).format(
     value || 0
   );
+
+}
+
+async function copyText(
+  text
+) {
+
+  try {
+
+    await navigator
+      .clipboard
+      .writeText(text);
+
+    return true;
+
+  } catch {
+
+    return false;
+
+  }
+
+}
+
+async function copyProfileUrl() {
+
+  const ok =
+    await copyText(
+      profileUrl()
+    );
+
+  if (ok) {
+
+    alert(
+      "Link profil berhasil disalin"
+    );
+
+  }
 
 }
