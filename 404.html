@@ -1,10 +1,27 @@
-<!doctype html>
-<html>
-<head>
-  <title>404</title>
-</head>
-<body>
-  <h1>404</h1>
-  <p>Halaman tidak ditemukan.</p>
-</body>
-</html>
+<script>
+const path = location.pathname
+  .replace(/^\/+/, "")
+  .replace(/\/+$/, "");
+
+const reserved = [
+  "",
+  "login",
+  "register",
+  "dashboard",
+  "profile"
+];
+
+if (
+  path &&
+  !reserved.includes(path)
+) {
+
+  sessionStorage.setItem(
+    "profile_username",
+    path
+  );
+
+  location.replace("/profile");
+
+}
+</script>
