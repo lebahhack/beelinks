@@ -447,3 +447,62 @@ height:65px;
 }
 
 }
+
+
+
+
+
+.avatar-preview{
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+margin:0 auto 12px;
+border:3px solid rgba(255,255,255,.15)
+}
+
+.profile-card{
+text-align:center;
+margin-bottom:20px
+}
+
+.stats-box{
+padding:12px;
+border:1px solid rgba(255,255,255,.12);
+border-radius:12px;
+margin-bottom:20px
+}
+
+.stats-box strong{
+font-size:18px
+}
+
+#sidebar-username{
+opacity:.7;
+margin-top:-8px
+}
+
+.link-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:12px;
+padding:12px;
+border:1px solid rgba(255,255,255,.08);
+border-radius:12px;
+margin-bottom:10px
+}
+
+.link-content{
+flex:1;
+overflow:hidden
+}
+
+.link-content small{
+display:block;
+opacity:.7;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap
+}
