@@ -3,6 +3,16 @@ export async function onRequest(context) {
   const url = new URL(context.request.url);
   const path = url.pathname.replace(/^\/+/, "");
 
+  // proxy redirect link ke worker
+  if (
+    url.pathname.startsWith("/r/")
+  ) {
+    return fetch(
+      "https://api-biolink.lebahhack.workers.dev" +
+      url.pathname
+    );
+  }
+
   // biarkan file statis lewat
   if (
     path.includes(".") ||
@@ -10,7 +20,9 @@ export async function onRequest(context) {
     path.startsWith("js/") ||
     path.startsWith("assets/")
   ) {
-    return context.env.ASSETS.fetch(context.request);
+    return context.env.ASSETS.fetch(
+      context.request
+    );
   }
 
   const reserved = [
@@ -21,14 +33,25 @@ export async function onRequest(context) {
     "profile"
   ];
 
-  // username
-  if (!reserved.includes(path)) {
+  // username profile
+  if (
+    path &&
+    !reserved.includes(path)
+  ) {
+
     return context.env.ASSETS.fetch(
       new Request(
-        new URL("/profile.html", url)
+        new URL(
+          "/profile.html",
+          url
+        )
       )
     );
+
   }
 
-  return context.env.ASSETS.fetch(context.request);
+  return context.env.ASSETS.fetch(
+    context.request
+  );
+
 }
