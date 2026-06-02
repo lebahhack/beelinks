@@ -5,24 +5,30 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Dashboard - BeeLinks</title>
+<title>Dashboard | BeeLinks</title>
 
 <meta
 name="description"
-content="Kelola profil dan link BeeLinks Anda">
+content="Kelola profil, avatar, dan semua link BeeLinks Anda dari dashboard.">
+
+<meta
+name="robots"
+content="noindex,nofollow">
+
+<link
+rel="icon"
+href="/assets/favicon.svg">
 
 <link
 rel="stylesheet"
 href="/css/style.css">
 
+<link
+rel="stylesheet"
+href="/css/dashboard.css">
+
 </head>
 <body>
-
-<script>
-if(!localStorage.getItem("token")){
-location.href="/login.html";
-}
-</script>
 
 <header class="site-header">
 
@@ -33,12 +39,15 @@ location.href="/login.html";
 <a
 href="/"
 class="logo">
+
 BeeLinks
+
 </a>
 
 <div class="header-actions">
 
 <button
+type="button"
 class="btn btn-secondary"
 onclick="openProfile()">
 
@@ -47,6 +56,7 @@ Lihat Profil
 </button>
 
 <button
+type="button"
 class="btn btn-primary"
 onclick="logout()">
 
@@ -77,13 +87,13 @@ Logout
 <img
 id="avatar-preview"
 class="avatar-preview"
-src=""
+src="/assets/avatar-default.svg"
 alt="Avatar">
 
 <h3
-id="profile-username">
+id="profile-name-preview">
 
-@username
+Memuat...
 
 </h3>
 
@@ -101,20 +111,18 @@ id="sidebar-username">
 <div>
 
 Total Link:
-<strong
-id="total-links">
-
+<strong id="total-links">
 0
-
 </strong>
 
 </div>
 
 </div>
 
-<br>
+<div class="sidebar-actions">
 
 <button
+type="button"
 class="btn btn-block btn-secondary"
 onclick="copyMyProfile()">
 
@@ -122,15 +130,16 @@ Salin Link Profil
 
 </button>
 
-<br>
-
 <button
+type="button"
 class="btn btn-block btn-primary"
 onclick="openProfile()">
 
 Buka Profil
 
 </button>
+
+</div>
 
 </aside>
 
@@ -146,10 +155,8 @@ Pengaturan Profil
 
 <div class="form-group">
 
-<label>
-
+<label for="profile-name">
 Nama
-
 </label>
 
 <input
@@ -161,28 +168,21 @@ placeholder="Nama Anda">
 
 <div class="form-group">
 
-<label>
-
+<label for="profile-bio">
 Bio
-
 </label>
 
 <textarea
 id="profile-bio"
 rows="4"
-placeholder="Tulis bio singkat">
-
-</textarea>
+placeholder="Tulis bio singkat"></textarea>
 
 </div>
 
 <div class="form-group">
 
-<label>
-
-Avatar URL
-(Opsional)
-
+<label for="profile-avatar">
+Avatar URL (Opsional)
 </label>
 
 <input
@@ -192,13 +192,14 @@ placeholder="https://...">
 
 <small>
 
-Kosongkan untuk menggunakan avatar otomatis BeeLinks
+Kosongkan untuk menggunakan avatar otomatis BeeLinks.
 
 </small>
 
 </div>
 
 <button
+type="button"
 class="btn btn-primary"
 onclick="saveProfile()">
 
@@ -206,7 +207,7 @@ Simpan Profil
 
 </button>
 
-<hr style="margin:30px 0">
+<hr>
 
 <h2 class="section-title">
 
@@ -216,10 +217,8 @@ Tambah Link
 
 <div class="form-group">
 
-<label>
-
+<label for="link-title">
 Judul Link
-
 </label>
 
 <input
@@ -231,10 +230,8 @@ placeholder="Instagram">
 
 <div class="form-group">
 
-<label>
-
+<label for="link-url">
 URL
-
 </label>
 
 <input
@@ -245,6 +242,7 @@ placeholder="https://">
 </div>
 
 <button
+type="button"
 class="btn btn-primary"
 onclick="addNewLink()">
 
@@ -252,7 +250,7 @@ Tambah Link
 
 </button>
 
-<hr style="margin:30px 0">
+<hr>
 
 <h2 class="section-title">
 
@@ -260,13 +258,10 @@ Daftar Link
 
 </h2>
 
-<div
-id="links-list">
+<div id="links-list">
 
 <p>
-
 Memuat data...
-
 </p>
 
 </div>
