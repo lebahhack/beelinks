@@ -5,11 +5,11 @@
 const Auth = {
 
   token() {
-    return localStorage.getItem("token");
+    return localStorage.getItem("token") || "";
   },
 
   username() {
-    return localStorage.getItem("username");
+    return localStorage.getItem("username") || "";
   },
 
   loggedIn() {
@@ -49,34 +49,28 @@ const Auth = {
 };
 
 /* =========================
+   AUTH HEADER
+========================= */
+
+function authHeaders() {
+
+  return {
+    Authorization:
+      `Bearer ${Auth.token()}`
+  };
+
+}
+
+/* =========================
    LOGOUT
 ========================= */
 
-async function logout() {
-
-  try {
-
-    await fetch(
-      "https://api-biolink.lebahhack.workers.dev/logout",
-      {
-        method: "POST",
-        headers: {
-          Authorization:
-          `Bearer ${Auth.token()}`
-        }
-      }
-    );
-
-  } catch (e) {
-
-    console.error(e);
-
-  }
+function logout() {
 
   Auth.clear();
 
   location.href =
-  "/login.html";
+    "/login.html";
 
 }
 
@@ -89,7 +83,7 @@ function requireAuth() {
   if (!Auth.loggedIn()) {
 
     location.href =
-    "/login.html";
+      "/login.html";
 
     return false;
 
@@ -108,7 +102,7 @@ function guestOnly() {
   if (Auth.loggedIn()) {
 
     location.href =
-    "/dashboard.html";
+      "/dashboard.html";
 
     return false;
 
@@ -126,34 +120,51 @@ async function currentUser() {
 
   try {
 
-    const res = await fetch(
-      "https://api-biolink.lebahhack.workers.dev/me",
-      {
-        headers: {
-          Authorization:
-          `Bearer ${Auth.token()}`
-        }
-      }
-    );
+    const data =
+      await api("/me", {
+        headers:
+          authHeaders()
+      });
 
-    if (!res.ok) {
+    return data.user || data;
 
-      throw new Error();
+  } catch (err) {
 
-    }
-
-    return await res.json();
-
-  } catch {
+    console.error(err);
 
     Auth.clear();
 
     location.href =
-    "/login.html";
+      "/login.html";
 
     return null;
 
   }
+
+}
+
+/* =========================
+   REFRESH USER
+========================= */
+
+async function refreshUser() {
+
+  const user =
+    await currentUser();
+
+  if (
+    user &&
+    user.username
+  ) {
+
+    localStorage.setItem(
+      "username",
+      user.username
+    );
+
+  }
+
+  return user;
 
 }
 
@@ -164,9 +175,26 @@ async function currentUser() {
 function profileUrl() {
 
   const username =
-  Auth.username();
+    Auth.username();
 
-  return `${location.origin}/${username}`;
+  if (!username) {
+    return location.origin;
+  }
+
+  return `${location.origin}/@${username}`;
+
+}
+
+/* =========================
+   OPEN PROFILE
+========================= */
+
+function openProfile() {
+
+  window.open(
+    profileUrl(),
+    "_blank"
+  );
 
 }
 
@@ -176,15 +204,68 @@ function profileUrl() {
 
 async function copyProfileUrl() {
 
-  const url =
-  profileUrl();
+  try {
 
-  await navigator.clipboard.writeText(
-    url
-  );
+    await navigator
+      .clipboard
+      .writeText(
+        profileUrl()
+      );
 
-  alert(
-    "Link profil berhasil disalin"
+    alert(
+      "Link profil berhasil disalin"
+    );
+
+  } catch {
+
+    alert(
+      "Gagal menyalin link"
+    );
+
+  }
+
+}
+
+/* =========================
+   LOGIN PAGE HELPER
+========================= */
+
+async function handleLogin(
+  username,
+  password
+) {
+
+  const data =
+    await login(
+      username,
+      password
+    );
+
+  Auth.save({
+    token:
+      data.token,
+    username:
+      data.username
+  });
+
+  return data;
+
+}
+
+/* =========================
+   REGISTER PAGE HELPER
+========================= */
+
+async function handleRegister(
+  username,
+  name,
+  password
+) {
+
+  return register(
+    username,
+    name,
+    password
   );
 
 }
