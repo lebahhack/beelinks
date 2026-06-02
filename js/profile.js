@@ -2,35 +2,51 @@
    PROFILE PAGE
 ========================= */
 
-
 document.addEventListener(
   "DOMContentLoaded",
   loadProfile
 );
 
+/* =========================
+   LOAD PROFILE
+========================= */
+
 async function loadProfile() {
 
   try {
 
-    const username = getUsername();
+    const username =
+      getProfileUsername();
 
     if (!username) {
+
       showNotFound();
+
       return;
+
     }
 
-    const profile = await getProfile(username);
+    const profile =
+      await getProfile(
+        username
+      );
 
     if (!profile) {
+
       showNotFound();
+
       return;
+
     }
 
-    renderProfile(profile);
+    renderProfile(
+      profile
+    );
 
   } catch (err) {
 
     console.error(err);
+
     showNotFound();
 
   }
@@ -41,28 +57,43 @@ async function loadProfile() {
    USERNAME FROM URL
 ========================= */
 
-function getUsername() {
+function getProfileUsername() {
 
   const path =
-  location.pathname
-  .replace(/^\/+/, "")
-  .replace(/\/+$/, "");
+    location.pathname
+      .replace(/^\/+/, "")
+      .replace(/\/+$/, "")
+      .toLowerCase();
 
   const reserved = [
 
     "",
+
     "login",
     "register",
+
     "dashboard",
+    "profile",
+
+    "admin",
+
     "about",
     "contact",
+
     "privacy",
-    "terms"
+    "terms",
+
+    "favicon.ico",
+
+    "robots.txt",
+    "sitemap.xml"
 
   ];
 
   if (
-    reserved.includes(path)
+    reserved.includes(
+      path
+    )
   ) {
 
     return null;
@@ -82,48 +113,45 @@ function renderProfile(
 ) {
 
   const avatar =
-  document.getElementById(
-    "profile-avatar"
-  );
+    document.getElementById(
+      "profile-avatar"
+    );
 
   const name =
-  document.getElementById(
-    "profile-name"
-  );
+    document.getElementById(
+      "profile-name"
+    );
 
   const bio =
-  document.getElementById(
-    "profile-bio"
-  );
-
-  const links =
-  document.getElementById(
-    "profile-links"
-  );
+    document.getElementById(
+      "profile-bio"
+    );
 
   if (avatar) {
 
     avatar.src =
-    profile.avatar ||
-    "/assets/avatar.png";
+      avatarUrl(
+        profile
+      );
 
     avatar.alt =
-    profile.name || "";
+      profile.name ||
+      profile.username;
 
   }
 
   if (name) {
 
     name.textContent =
-    profile.name ||
-    profile.username;
+      profile.name ||
+      profile.username;
 
   }
 
   if (bio) {
 
     bio.textContent =
-    profile.bio || "";
+      profile.bio || "";
 
   }
 
@@ -146,16 +174,21 @@ function renderLinks(
 ) {
 
   const container =
-  document.getElementById(
-    "profile-links"
-  );
+    document.getElementById(
+      "profile-links"
+    );
 
   if (!container) return;
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
   const links =
-  profile.links || [];
+    (profile.links || [])
+      .filter(
+        link =>
+          link.active !== false
+      );
 
   if (!links.length) {
 
@@ -172,24 +205,24 @@ function renderLinks(
   links.forEach(link => {
 
     const a =
-    document.createElement(
-      "a"
-    );
+      document.createElement(
+        "a"
+      );
 
     a.className =
-    "profile-link";
+      "profile-link";
 
     a.href =
-    `https://api-biolink.lebahhack.workers.dev/r/${profile.username}/${link.id}`;
+      `${API_BASE}/r/${profile.username}/${link.id}`;
 
     a.target =
-    "_blank";
+      "_blank";
 
     a.rel =
-    "noopener noreferrer";
+      "noopener noreferrer";
 
     a.textContent =
-    link.title;
+      link.title;
 
     container.appendChild(
       a
@@ -208,16 +241,16 @@ function updateSEO(
 ) {
 
   const title =
-  profile.name
-  ? `${profile.name} | BeeLinks`
-  : "BeeLinks";
+    profile.name
+      ? `${profile.name} | BeeLinks`
+      : `${profile.username} | BeeLinks`;
+
+  const description =
+    profile.bio ||
+    `${profile.name || profile.username} di BeeLinks`;
 
   document.title =
-  title;
-
-  let description =
-  profile.bio ||
-  `Profil ${profile.username}`;
+    title;
 
   updateMeta(
     "description",
@@ -234,6 +267,23 @@ function updateSEO(
     description
   );
 
+  updateMetaProperty(
+    "og:image",
+    avatarUrl(
+      profile
+    )
+  );
+
+  updateMetaProperty(
+    "og:type",
+    "profile"
+  );
+
+  updateMetaProperty(
+    "og:url",
+    location.href
+  );
+
 }
 
 /* =========================
@@ -246,16 +296,16 @@ function updateMeta(
 ) {
 
   let tag =
-  document.querySelector(
-    `meta[name="${name}"]`
-  );
+    document.querySelector(
+      `meta[name="${name}"]`
+    );
 
   if (!tag) {
 
     tag =
-    document.createElement(
-      "meta"
-    );
+      document.createElement(
+        "meta"
+      );
 
     tag.setAttribute(
       "name",
@@ -285,16 +335,16 @@ function updateMetaProperty(
 ) {
 
   let tag =
-  document.querySelector(
-    `meta[property="${property}"]`
-  );
+    document.querySelector(
+      `meta[property="${property}"]`
+    );
 
   if (!tag) {
 
     tag =
-    document.createElement(
-      "meta"
-    );
+      document.createElement(
+        "meta"
+      );
 
     tag.setAttribute(
       "property",
@@ -321,20 +371,20 @@ function updateMetaProperty(
 function showNotFound() {
 
   document.title =
-  "Profil Tidak Ditemukan";
+    "Profil Tidak Ditemukan";
 
   document.body.innerHTML = `
 
     <main
       style="
-      min-height:100vh;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      flex-direction:column;
-      font-family:system-ui;
-      text-align:center;
-      padding:20px;
+        min-height:100vh;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        flex-direction:column;
+        text-align:center;
+        padding:20px;
+        font-family:system-ui;
       "
     >
 
