@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Dashboard - BeeLinks</title>
+
+<meta name="description"
+content="Kelola profil dan link BeeLinks Anda.">
+
+<link
+rel="stylesheet"
+href="/css/style.css">
+
+</head>
+<body>
+
+<header class="site-header">
+
+<div class="container">
+
+<div class="header-inner">
+
+<a
+href="/"
+class="logo">
+BeeLinks </a>
+
+<div class="header-actions">
+
+<button
+class="btn btn-secondary"
+onclick="openProfile()">
+Lihat Profil </button>
+
+<button
+class="btn btn-primary"
+onclick="logout()">
+Logout </button>
+
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+<main class="dashboard">
+
+<div class="container">
+
+<div class="dashboard-grid">
+
+<!-- SIDEBAR -->
+
+<aside class="sidebar">
+
+<h3 class="section-title">
+Profil Saya
+</h3>
+
+<p>
+Kelola informasi profil publik Anda.
+</p>
+
+<br>
+
+<button
+class="btn btn-block btn-secondary"
+onclick="copyMyProfile()">
+
+Salin Link Profil
+
+</button>
+
+</aside>
+
+<!-- CONTENT -->
+
+<section class="content">
+
+<h2 class="section-title">
+
+Pengaturan Profil
+
+</h2>
+
+<div class="form-group">
+
+<label>
+Nama
+</label>
+
+<input
+type="text"
+id="profile-name"
+placeholder="Nama Anda">
+
+</div>
+
+<div class="form-group">
+
+<label>
+Bio
+</label>
+
+<textarea
+id="profile-bio"
+rows="4"
+placeholder="Tulis bio singkat">
+</textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>
+Avatar URL
+</label>
+
+<input
+type="url"
+id="profile-avatar"
+placeholder="https://...">
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="saveProfile()">
+
+Simpan Profil
+
+</button>
+
+<hr style="margin:30px 0">
+
+<h2 class="section-title">
+
+Tambah Link
+
+</h2>
+
+<div class="form-group">
+
+<label>
+Judul Link
+</label>
+
+<input
+type="text"
+id="link-title"
+placeholder="Instagram">
+
+</div>
+
+<div class="form-group">
+
+<label>
+URL
+</label>
+
+<input
+type="url"
+id="link-url"
+placeholder="https://">
+
+</div>
+
+<button
+class="btn btn-primary"
+onclick="addNewLink()">
+
+Tambah Link
+
+</button>
+
+<hr style="margin:30px 0">
+
+<h2 class="section-title">
+
+Daftar Link
+
+</h2>
+
+<div
+id="links-list">
+
+<p>
+Memuat data...
+</p>
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+</main>
+
+<script src="/js/api.js"></script>
+
+<script src="/js/auth.js"></script>
+
+<script src="/js/dashboard.js"></script>
+
+</body>
+</html>
