@@ -15,11 +15,17 @@ document.addEventListener(
 
 async function initDashboard() {
 
-  requireAuth();
+  if (!requireAuth()) {
+    return;
+  }
 
   try {
 
-    profile = await currentUser();
+    const res =
+      await me();
+
+    profile =
+      res.user;
 
     renderProfile();
 
@@ -28,6 +34,12 @@ async function initDashboard() {
   } catch (err) {
 
     console.error(err);
+
+    alert(
+      "Session expired"
+    );
+
+    logout();
 
   }
 
@@ -42,33 +54,43 @@ function renderProfile() {
   if (!profile) return;
 
   const name =
-  document.getElementById(
-    "profile-name"
-  );
+    document.getElementById(
+      "profile-name"
+    );
 
   const bio =
-  document.getElementById(
-    "profile-bio"
-  );
+    document.getElementById(
+      "profile-bio"
+    );
 
   const avatar =
-  document.getElementById(
-    "profile-avatar"
-  );
+    document.getElementById(
+      "profile-avatar"
+    );
+
+  const preview =
+    document.getElementById(
+      "avatar-preview"
+    );
 
   if (name) {
     name.value =
-    profile.name || "";
+      profile.name || "";
   }
 
   if (bio) {
     bio.value =
-    profile.bio || "";
+      profile.bio || "";
   }
 
   if (avatar) {
     avatar.value =
-    profile.avatar || "";
+      profile.avatar || "";
+  }
+
+  if (preview) {
+    preview.src =
+      avatarUrl(profile);
   }
 
 }
@@ -84,25 +106,41 @@ async function saveProfile() {
     const payload = {
 
       name:
-      document.getElementById(
-        "profile-name"
-      ).value.trim(),
+        document
+          .getElementById(
+            "profile-name"
+          )
+          .value
+          .trim(),
 
       bio:
-      document.getElementById(
-        "profile-bio"
-      ).value.trim(),
+        document
+          .getElementById(
+            "profile-bio"
+          )
+          .value
+          .trim(),
 
       avatar:
-      document.getElementById(
-        "profile-avatar"
-      ).value.trim()
+        document
+          .getElementById(
+            "profile-avatar"
+          )
+          .value
+          .trim()
 
     };
 
     await updateProfile(
       payload
     );
+
+    profile = {
+      ...profile,
+      ...payload
+    };
+
+    renderProfile();
 
     alert(
       "Profil berhasil disimpan"
@@ -125,24 +163,21 @@ async function saveProfile() {
 function renderLinks() {
 
   const container =
-  document.getElementById(
-    "links-list"
-  );
+    document.getElementById(
+      "links-list"
+    );
 
   if (!container) return;
 
   container.innerHTML = "";
 
   const links =
-  profile.links || [];
+    profile?.links || [];
 
   if (!links.length) {
 
-    container.innerHTML = `
-      <p>
-        Belum ada link
-      </p>
-    `;
+    container.innerHTML =
+      "<p>Belum ada link</p>";
 
     return;
 
@@ -151,29 +186,25 @@ function renderLinks() {
   links.forEach(link => {
 
     const item =
-    document.createElement(
-      "div"
-    );
+      document.createElement(
+        "div"
+      );
 
     item.className =
-    "link-item";
+      "link-item";
 
     item.innerHTML = `
       <div class="link-content">
-
         <strong>
           ${escapeHtml(link.title)}
         </strong>
-
         <small>
           ${escapeHtml(link.url)}
         </small>
-
       </div>
 
       <button
-        onclick="removeLink('${link.id}')"
-      >
+        onclick="removeLink('${link.id}')">
         Hapus
       </button>
     `;
@@ -193,45 +224,45 @@ function renderLinks() {
 async function addNewLink() {
 
   const title =
-  document.getElementById(
-    "link-title"
-  ).value.trim();
+    document
+      .getElementById(
+        "link-title"
+      )
+      .value
+      .trim();
 
   const url =
-  document.getElementById(
-    "link-url"
-  ).value.trim();
+    document
+      .getElementById(
+        "link-url"
+      )
+      .value
+      .trim();
 
   if (!title) {
-
-    alert(
+    return alert(
       "Judul wajib diisi"
     );
-
-    return;
-
   }
 
   if (!url) {
-
-    alert(
+    return alert(
       "URL wajib diisi"
     );
-
-    return;
-
   }
 
   try {
 
-    const result =
     await addLink(
       title,
       url
     );
 
-    profile.links =
-    result.links || [];
+    const res =
+      await me();
+
+    profile =
+      res.user;
 
     renderLinks();
 
@@ -259,20 +290,23 @@ async function addNewLink() {
 
 async function removeLink(id) {
 
-  const ok =
-  confirm(
-    "Hapus link ini?"
-  );
-
-  if (!ok) return;
+  if (
+    !confirm(
+      "Hapus link ini?"
+    )
+  ) {
+    return;
+  }
 
   try {
 
-    const result =
     await deleteLink(id);
 
-    profile.links =
-    result.links || [];
+    const res =
+      await me();
+
+    profile =
+      res.user;
 
     renderLinks();
 
@@ -287,22 +321,18 @@ async function removeLink(id) {
 }
 
 /* =========================
-   COPY PROFILE URL
+   COPY PROFILE
 ========================= */
 
 async function copyMyProfile() {
 
-  const username =
-  Auth.username();
-
-  const url =
-  `${location.origin}/${username}`;
-
   try {
 
     await navigator
-    .clipboard
-    .writeText(url);
+      .clipboard
+      .writeText(
+        profileUrl()
+      );
 
     alert(
       "Link profil disalin"
@@ -311,7 +341,7 @@ async function copyMyProfile() {
   } catch {
 
     alert(
-      url
+      profileUrl()
     );
 
   }
@@ -319,16 +349,13 @@ async function copyMyProfile() {
 }
 
 /* =========================
-   PREVIEW PROFILE
+   OPEN PROFILE
 ========================= */
 
 function openProfile() {
 
-  const username =
-  Auth.username();
-
   window.open(
-    `/${username}`,
+    "/" + getUsername(),
     "_blank"
   );
 
