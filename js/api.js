@@ -252,6 +252,7 @@ async function me() {
 
 }
 
+
 /* =========================
    PROFILE
 ========================= */
@@ -260,8 +261,14 @@ async function getProfile(
   username
 ) {
 
+  if (!username) {
+    return null;
+  }
+
   return api(
-    `/@${username}`
+    `/${encodeURIComponent(
+      username
+    )}`
   );
 
 }
