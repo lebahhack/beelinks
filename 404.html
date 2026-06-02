@@ -1,19 +1,15 @@
-<script>
-const path =
-location.pathname
-.replace(/^\/+/,"")
-.replace(/\/+$/,"");
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>404 - Halaman Tidak Ditemukan</title>
+</head>
+<body>
 
-const reserved = [
-"",
-"login",
-"register",
-"dashboard"
-];
+<h1>404</h1>
+<p>Halaman tidak ditemukan.</p>
 
-if (!reserved.includes(path)) {
-  location.replace(
-    `/profile.html?u=${encodeURIComponent(path)}`
-  );
-}
-</script>
+<a href="/">Kembali ke Beranda</a>
+
+</body>
+</html>
