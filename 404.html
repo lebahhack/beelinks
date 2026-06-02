@@ -15,13 +15,9 @@ if (
   path &&
   !reserved.includes(path)
 ) {
-
-  sessionStorage.setItem(
-    "profile_username",
-    path
+  location.replace(
+    "/profile?u=" +
+    encodeURIComponent(path)
   );
-
-  location.replace("/profile");
-
 }
 </script>
