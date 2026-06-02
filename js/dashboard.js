@@ -272,13 +272,21 @@ function renderLinks() {
 
       </div>
 
-      <button
-        class="btn btn-danger"
-        onclick="removeLink('${link.id}')">
+     <button
+    class="btn btn-secondary"
+    onclick="editLink('${link.id}')">
 
-        Hapus
+    Edit
 
-      </button>
+  </button>
+
+  <button
+    class="btn btn-danger"
+    onclick="removeLink('${link.id}')">
+
+    Hapus
+
+  </button>
     `;
 
     container.appendChild(
