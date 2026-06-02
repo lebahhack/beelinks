@@ -2,6 +2,7 @@
    PROFILE PAGE
 ========================= */
 
+
 document.addEventListener(
   "DOMContentLoaded",
   loadProfile
@@ -11,30 +12,25 @@ async function loadProfile() {
 
   try {
 
-    const username =
-    getUsername();
+    const username = getUsername();
 
     if (!username) {
-
       showNotFound();
-
       return;
-
     }
 
-    const profile =
-    await getProfile(
-      username
-    );
+    const profile = await getProfile(username);
 
-    renderProfile(
-      profile
-    );
+    if (!profile) {
+      showNotFound();
+      return;
+    }
+
+    renderProfile(profile);
 
   } catch (err) {
 
     console.error(err);
-
     showNotFound();
 
   }
