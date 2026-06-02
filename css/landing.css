@@ -1,0 +1,295 @@
+/* =========================
+   HERO
+========================= */
+
+.hero{
+padding:100px 0 80px;
+text-align:center
+}
+
+.hero h1{
+font-size:56px;
+font-weight:800;
+line-height:1.1;
+margin-bottom:20px
+}
+
+.hero p{
+max-width:760px;
+margin:0 auto 32px;
+font-size:18px;
+color:#64748b
+}
+
+.hero-actions{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.features{
+padding:80px 0
+}
+
+.features-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(250px,1fr));
+gap:24px
+}
+
+.feature-card{
+padding:24px;
+border:1px solid #e5e7eb;
+border-radius:18px;
+background:#fff;
+transition:.2s
+}
+
+.feature-card:hover{
+transform:translateY(-3px);
+box-shadow:
+0 12px 30px rgba(0,0,0,.06)
+}
+
+.feature-card h3{
+margin-bottom:10px;
+font-size:20px
+}
+
+.feature-card p{
+color:#64748b
+}
+
+/* =========================
+   PREVIEW
+========================= */
+
+.preview{
+padding:80px 0;
+text-align:center
+}
+
+.preview-card{
+max-width:420px;
+margin:0 auto;
+padding:24px;
+border:1px solid #e5e7eb;
+border-radius:24px;
+background:#fff
+}
+
+.preview-avatar{
+width:90px;
+height:90px;
+border-radius:999px;
+margin:0 auto 16px;
+object-fit:cover
+}
+
+.preview-name{
+font-size:24px;
+font-weight:700;
+margin-bottom:10px
+}
+
+.preview-bio{
+color:#64748b;
+margin-bottom:20px
+}
+
+.preview-links{
+display:flex;
+flex-direction:column;
+gap:12px
+}
+
+.preview-link{
+display:block;
+padding:14px;
+border:1px solid #e5e7eb;
+border-radius:14px;
+font-weight:600
+}
+
+/* =========================
+   BENEFITS
+========================= */
+
+.benefits{
+padding:80px 0
+}
+
+.benefits-grid{
+display:grid;
+grid-template-columns:
+repeat(auto-fit,minmax(280px,1fr));
+gap:24px
+}
+
+.benefit-item{
+padding:24px;
+border-radius:18px;
+background:#f8fafc
+}
+
+.benefit-item h3{
+margin-bottom:10px
+}
+
+.benefit-item p{
+color:#64748b
+}
+
+/* =========================
+   FAQ
+========================= */
+
+.faq{
+padding:80px 0
+}
+
+.faq-list{
+max-width:800px;
+margin:0 auto
+}
+
+.faq-item{
+border:1px solid #e5e7eb;
+border-radius:16px;
+margin-bottom:12px;
+overflow:hidden
+}
+
+.faq-item summary{
+cursor:pointer;
+padding:18px 20px;
+font-weight:600;
+list-style:none
+}
+
+.faq-item summary::-webkit-details-marker{
+display:none
+}
+
+.faq-item p{
+padding:0 20px 20px;
+color:#64748b
+}
+
+/* =========================
+   CTA
+========================= */
+
+.cta{
+padding:100px 0;
+text-align:center
+}
+
+.cta-box{
+padding:50px 30px;
+border-radius:24px;
+background:#111827;
+color:#fff
+}
+
+.cta-box h2{
+font-size:42px;
+margin-bottom:16px
+}
+
+.cta-box p{
+max-width:700px;
+margin:0 auto 30px;
+opacity:.9
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.landing-footer{
+border-top:1px solid #e5e7eb;
+padding:40px 0;
+margin-top:60px
+}
+
+.footer-grid{
+display:grid;
+grid-template-columns:
+2fr 1fr 1fr;
+gap:30px
+}
+
+.footer-links{
+display:flex;
+flex-direction:column;
+gap:10px
+}
+
+.footer-links a{
+color:#64748b
+}
+
+.footer-links a:hover{
+color:#111827
+}
+
+.footer-copy{
+margin-top:30px;
+padding-top:20px;
+border-top:1px solid #e5e7eb;
+text-align:center;
+color:#64748b
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+.hero{
+padding:70px 0 50px
+}
+
+.hero h1{
+font-size:38px
+}
+
+.hero p{
+font-size:16px
+}
+
+.cta-box h2{
+font-size:30px
+}
+
+.footer-grid{
+grid-template-columns:1fr;
+text-align:center
+}
+
+}
+
+@media(max-width:480px){
+
+.hero h1{
+font-size:32px
+}
+
+.preview-card{
+padding:20px
+}
+
+.feature-card,
+.benefit-item{
+padding:20px
+}
+
+}
