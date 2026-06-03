@@ -37,7 +37,8 @@ export async function onRequest(context) {
     path.startsWith("css/") ||
     path.startsWith("js/") ||
   path.startsWith("assets/") ||
-  path.startsWith("components/")
+    path.startsWith("components/") ||
+  path.startsWith("og/")
   ) {
 
     return context.env.ASSETS.fetch(
@@ -56,7 +57,7 @@ export async function onRequest(context) {
 
     "dashboard",
     "privacy",
-
+     "amp",
     "profile"
 
   ];
