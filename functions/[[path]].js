@@ -60,6 +60,7 @@ export async function onRequest(context) {
     "privacy",
     "og",
      "amp",
+    "sitemap.xml",
     "profile"
 
   ];
