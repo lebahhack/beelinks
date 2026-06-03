@@ -1,0 +1,85 @@
+/* =========================
+   GLASS THEME
+========================= */
+
+body{
+background:
+linear-gradient(
+135deg,
+#667eea 0%,
+#764ba2 100%
+);
+color:#ffffff;
+min-height:100vh;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-card{
+padding:24px;
+border-radius:24px;
+background:rgba(255,255,255,.12);
+backdrop-filter:blur(20px);
+-webkit-backdrop-filter:blur(20px);
+border:1px solid rgba(255,255,255,.15);
+box-shadow:
+0 8px 32px rgba(0,0,0,.15);
+}
+
+.profile-avatar{
+border-color:
+rgba(255,255,255,.3);
+background:
+rgba(255,255,255,.2);
+}
+
+.profile-name{
+color:#ffffff;
+}
+
+.profile-bio{
+color:
+rgba(255,255,255,.85);
+}
+
+/* =========================
+   LINKS
+========================= */
+
+.profile-link{
+background:
+rgba(255,255,255,.15);
+border-color:
+rgba(255,255,255,.2);
+color:#ffffff;
+backdrop-filter:blur(12px);
+-webkit-backdrop-filter:blur(12px);
+}
+
+.profile-link:hover{
+border-color:
+rgba(255,255,255,.4);
+background:
+rgba(255,255,255,.22);
+box-shadow:
+0 8px 24px rgba(0,0,0,.18);
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.profile-links p{
+color:
+rgba(255,255,255,.8);
+}
+
+/* =========================
+   VERIFIED BADGE
+========================= */
+
+.verified-badge{
+color:#ffffff;
+}
