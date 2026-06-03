@@ -186,7 +186,7 @@ async function saveProfile() {
             "profile-avatar"
           )
           .value
-          .trim()
+          .trim(),
      theme:
         document
     .getElementById(
