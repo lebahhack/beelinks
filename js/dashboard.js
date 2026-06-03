@@ -36,7 +36,22 @@ async function initDashboard() {
 
     renderProfile();
     renderLinks();
+     updateThemePreview();
 
+     const themeSelect =
+  document.getElementById(
+    "profile-theme"
+  );
+
+if (themeSelect) {
+
+  themeSelect.addEventListener(
+    "change",
+    updateThemePreview
+  );
+
+}
+     
   } catch (err) {
 
     console.error(err);
@@ -222,6 +237,38 @@ async function saveProfile() {
   }
 
 }
+
+
+
+
+/* =========================
+   THEME PREVIEW
+========================= */
+
+function updateThemePreview() {
+
+  const select =
+    document.getElementById(
+      "profile-theme"
+    );
+
+  const preview =
+    document.getElementById(
+      "theme-preview"
+    );
+
+  if (
+    !select ||
+    !preview
+  ) {
+    return;
+  }
+
+  preview.className =
+    `theme-preview theme-${select.value}`;
+
+}
+
 
 /* =========================
    LINKS
