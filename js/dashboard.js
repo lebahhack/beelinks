@@ -38,7 +38,8 @@ async function initDashboard() {
 renderLinks();
 renderPreviewLinks();
 updateThemePreview();
-
+bindLivePreview();
+     
 const themeSelect =
   document.getElementById(
     "profile-theme"
@@ -252,6 +253,91 @@ async function saveProfile() {
 }
 
 
+
+/* =========================
+   LIVE PREVIEW
+========================= */
+
+function bindLivePreview() {
+
+  const nameInput =
+    document.getElementById(
+      "profile-name"
+    );
+
+  const bioInput =
+    document.getElementById(
+      "profile-bio"
+    );
+
+  const avatarInput =
+    document.getElementById(
+      "profile-avatar"
+    );
+
+  const namePreview =
+    document.getElementById(
+      "profile-name-preview"
+    );
+
+  const bioPreview =
+    document.getElementById(
+      "profile-bio-preview"
+    );
+
+  const avatarPreview =
+    document.getElementById(
+      "avatar-preview"
+    );
+
+  if (nameInput && namePreview) {
+
+    nameInput.addEventListener(
+      "input",
+      () => {
+
+        namePreview.textContent =
+          nameInput.value.trim() ||
+          profile.username;
+
+      }
+    );
+
+  }
+
+  if (bioInput && bioPreview) {
+
+    bioInput.addEventListener(
+      "input",
+      () => {
+
+        bioPreview.textContent =
+          bioInput.value;
+
+      }
+    );
+
+  }
+
+  if (
+    avatarInput &&
+    avatarPreview
+  ) {
+
+    avatarInput.addEventListener(
+      "input",
+      () => {
+
+        avatarPreview.src =
+          avatarInput.value.trim() ||
+          `${API_BASE}/avatar/${profile.username}`;
+
+      }
+    );
+
+  }
+
+}
 
 /* =========================
    renderPreviewLinks
