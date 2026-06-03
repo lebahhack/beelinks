@@ -35,10 +35,11 @@ async function initDashboard() {
     }
 
     renderProfile();
-    renderLinks();
-     updateThemePreview();
+renderLinks();
+renderPreviewLinks();
+updateThemePreview();
 
-     const themeSelect =
+const themeSelect =
   document.getElementById(
     "profile-theme"
   );
@@ -252,6 +253,45 @@ async function saveProfile() {
 
 
 
+/* =========================
+   renderPreviewLinks
+========================= */
+function renderPreviewLinks() {
+
+  const container =
+    document.getElementById(
+      "profile-links-preview"
+    );
+
+  if (!container) {
+    return;
+  }
+
+  container.innerHTML = "";
+
+  const links =
+    profile?.links || [];
+
+  links.forEach(link => {
+
+    const item =
+      document.createElement(
+        "div"
+      );
+
+    item.className =
+      "preview-link";
+
+    item.textContent =
+      link.title;
+
+    container.appendChild(
+      item
+    );
+
+  });
+
+}
 
 /* =========================
    THEME PREVIEW
@@ -428,6 +468,7 @@ async function addNewLink() {
 
     renderProfile();
     renderLinks();
+    renderPreviewLinks();
 
     document.getElementById(
       "link-title"
@@ -469,6 +510,7 @@ async function removeLink(id) {
 
     renderProfile();
     renderLinks();
+    renderPreviewLinks();
 
   } catch (err) {
 
@@ -527,6 +569,7 @@ async function editLink(id) {
       await me();
 
     renderLinks();
+    renderPreviewLinks();
 
   } catch (err) {
 
