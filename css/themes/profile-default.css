@@ -1,0 +1,56 @@
+/* =========================
+   DEFAULT THEME
+========================= */
+
+body{
+background:#ffffff;
+color:#0f172a;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-avatar{
+border-color:#f1f5f9;
+background:#ffffff;
+}
+
+.profile-name{
+color:#0f172a;
+}
+
+.profile-bio{
+color:#64748b;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+.profile-link{
+background:#ffffff;
+border-color:#e5e7eb;
+color:#111827;
+}
+
+.profile-link:hover{
+border-color:#111827;
+box-shadow:0 10px 25px rgba(0,0,0,.06);
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.profile-links p{
+color:#64748b;
+}
+
+/* =========================
+   VERIFIED BADGE
+========================= */
+
+.verified-badge{
+color:#3b82f6;
+}
