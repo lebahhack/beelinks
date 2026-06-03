@@ -77,6 +77,11 @@ function renderProfile() {
       "profile-avatar"
     );
 
+   const theme =
+  document.getElementById(
+    "profile-theme"
+  );
+
   if (name) {
     name.value =
       profile.name || "";
@@ -92,6 +97,10 @@ function renderProfile() {
       profile.avatar || "";
   }
 
+   if (theme) {
+  theme.value =
+    profile.theme || "default";
+}
   // sidebar
 
   const avatarPreview =
@@ -178,7 +187,13 @@ async function saveProfile() {
           )
           .value
           .trim()
-
+     theme:
+        document
+    .getElementById(
+      "profile-theme"
+    )
+    .value
+     
     };
 
     await updateProfile(
