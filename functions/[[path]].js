@@ -1,204 +1,388 @@
 export async function onRequest(context) {
 
-  const url = new URL(context.request.url);
-  const path = url.pathname.replace(/^\/+/, "");
+  const url =
+    new URL(
+      context.request.url
+    );
+
+  const path =
+    url.pathname
+      .replace(/^\/+/, "")
+      .toLowerCase();
 
   // =========================
-  // CORS PRE-FLIGHT
+  // REDIRECT LINK
   // =========================
-  if (context.request.method === "OPTIONS") {
-    return new Response(null, {
-      headers: corsHeaders()
-    });
+
+  if (
+    url.pathname.startsWith("/r/")
+  ) {
+
+    return fetch(
+      "https://api-biolink.lebahhack.workers.dev" +
+      url.pathname,
+      {
+        redirect: "manual"
+      }
+    );
+
   }
 
-  try {
+  // =========================
+  // STATIC FILES
+  // =========================
 
-    const isStatic =
-      path.includes(".") ||
-      path.startsWith("css/") ||
-      path.startsWith("js/") ||
-      path.startsWith("assets/") ||
-      path.startsWith("components/") ||
-      path.startsWith("amp/") ||
-      path.startsWith("og/");
+  if (
+    path.includes(".") ||
+    path.startsWith("css/") ||
+    path.startsWith("js/") ||
+    path.startsWith("assets/") ||
+    path.startsWith("components/") ||
+    path.startsWith("amp/") ||
+    path.startsWith("og/")
+  ) {
 
-    // =========================
-    // 1. REDIRECT LINK /r/
-    // =========================
-    if (url.pathname.startsWith("/r/")) {
-      return fetch(
-        "https://api-biolink.lebahhack.workers.dev" + url.pathname,
-        { redirect: "manual" }
+    return context.env.ASSETS.fetch(
+      context.request
+    );
+
+  }
+
+  const reserved = [
+
+    "",
+
+    "login",
+
+    "register",
+
+    "dashboard",
+    "privacy",
+    "og",
+     "amp",
+    "profile"
+
+  ];
+
+  // =========================
+  // PUBLIC PROFILE
+  // =========================
+
+  if (
+    path &&
+    !reserved.includes(path)
+  ) {
+
+    try {
+
+      const api =
+        await fetch(
+          `https://api-biolink.lebahhack.workers.dev/${path}`
+        );
+
+      if (!api.ok) {
+
+        return new Response(
+          notFoundHtml(),
+          {
+            status: 404,
+            headers: {
+              "Content-Type":
+                "text/html;charset=UTF-8"
+            }
+          }
+        );
+
+      }
+
+      const profile =
+        await api.json();
+
+      return new Response(
+        profileHtml(
+          profile,
+          url
+        ),
+        {
+          headers: {
+            "Content-Type":
+              "text/html;charset=UTF-8"
+          }
+        }
       );
-    }
 
+    } catch {
 
-    // =========================
-    // RESERVED ROUTES
-    // =========================
-    const reserved = [
-      "",
-      "login",
-      "register",
-      "dashboard",
-      "profile",
-      "admin",
-      "api",
-      "me",
-      "logout",
-      "stats",
-      "kv-test",
-      "privacy",
-      "terms",
-      "about"
-    ];
-
-    // =========================
-    // 3. AMP ROUTE (fallback to assets)
-    // =========================
-    if (url.pathname.startsWith("/amp/")) {
-      return context.env.ASSETS.fetch(context.request);
-    }
-
-    // =========================
-    // 4. OG ROUTE (fallback to assets)
-    // =========================
-    if (url.pathname.startsWith("/og/")) {
-      return context.env.ASSETS.fetch(context.request);
-    }
-
-    // =========================
-    // 5. PROFILE SSR SEO (/username)
-    // =========================
-    if (!reserved.includes(path)) {
-
-      const user = await context.env.BIO_KV.get(
-        `user:${path}`,
-        "json"
+      return new Response(
+        notFoundHtml(),
+        {
+          status: 404,
+          headers: {
+            "Content-Type":
+              "text/html;charset=UTF-8"
+          }
+        }
       );
 
-      if (user) {
+    }
 
-        const title = `${user.name || user.username} | BeeLinks`;
-        const description = user.bio || `Link page ${user.username}`;
-        const image = user.avatar || `${url.origin}/avatar/${user.username}`;
+  }
 
-        const links = (user.links || [])
-          .filter(l => l.active !== false)
-          .map(l => `
-            <a class="profile-link"
-               href="/r/${user.username}/${l.id}">
-              ${l.title}
-            </a>
-          `).join("");
+  // =========================
+  // DEFAULT
+  // =========================
 
-        return new Response(`
+  return context.env.ASSETS.fetch(
+    context.request
+  );
+
+}
+
+function profileHtml(
+  profile,
+  url
+) {
+
+  const title =
+    `${profile.name || profile.username} | BeeLinks`;
+
+  const description =
+    profile.bio ||
+    `Lihat semua link ${
+      profile.name ||
+      profile.username
+    }`;
+
+  const image =
+  `${url.origin}/og/${profile.username}`;
+
+const theme =
+  profile.theme ||
+  "default";
+  
+  const links =
+    (profile.links || [])
+      .filter(
+        link =>
+          link.active !== false
+      )
+      .map(
+        link => `
+<a
+class="profile-link"
+href="/r/${profile.username}/${link.id}"
+target="_blank"
+rel="noopener noreferrer">
+
+${escapeHtml(link.title)}
+
+</a>
+`
+      )
+      .join("");
+
+  return `
 <!DOCTYPE html>
+
 <html lang="id">
+
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>${title}</title>
-<meta name="description" content="${description}">
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
 
-<meta property="og:type" content="profile">
-<meta property="og:title" content="${title}">
-<meta property="og:description" content="${description}">
-<meta property="og:image" content="${image}">
-<meta property="og:url" content="${url.href}">
+<title>${escapeHtml(title)}</title>
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="${title}">
-<meta name="twitter:description" content="${description}">
-<meta name="twitter:image" content="${image}">
+<meta
+name="description"
+content="${escapeHtml(description)}">
 
-<link rel="canonical" href="${url.href}">
+<meta
+name="robots"
+content="index,follow">
 
-<link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/profile.css">
+<meta
+property="og:type"
+content="profile">
+
+<meta
+property="og:title"
+content="${escapeHtml(title)}">
+
+<meta
+property="og:description"
+content="${escapeHtml(description)}">
+
+<meta
+property="og:image"
+content="${image}">
+
+<meta
+property="og:url"
+content="${url.href}">
+
+<meta
+name="twitter:card"
+content="summary_large_image">
+
+<meta
+name="twitter:title"
+content="${escapeHtml(title)}">
+
+<meta
+name="twitter:description"
+content="${escapeHtml(description)}">
+
+<meta
+name="twitter:image"
+content="${image}">
+
+<link
+rel="canonical"
+href="${url.href}">
+
+<link
+rel="stylesheet"
+href="/css/profile.css">
+
+<link
+rel="stylesheet"
+href="/css/themes/profile-${theme}.css">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfilePage",
+  "name":"${escapeHtml(profile.name || profile.username)}",
+  "description":"${escapeHtml(description)}",
+  "url":"${url.href}",
+  "image":"${image}"
+}
+</script>
 
 </head>
+
 <body>
 
 <main class="profile">
 
 <div class="profile-card">
 
-<img class="profile-avatar" src="${image}" alt="${user.username}">
+<img
+class="profile-avatar"
+src="${image}"
+alt="${escapeHtml(
+  profile.name ||
+  profile.username
+)}"
+loading="eager">
 
-<h1 class="profile-name">
-${user.name || user.username}
+<h1
+class="profile-name">
+
+${escapeHtml(
+  profile.name ||
+  profile.username
+)}
+
 </h1>
 
-<p class="profile-bio">
-${user.bio || ""}
+<p
+class="profile-bio">
+
+${escapeHtml(
+  profile.bio || ""
+)}
+
 </p>
 
 </div>
 
-<div class="profile-links">
+<div
+class="profile-links">
+
 ${links}
+
 </div>
+
+<footer
+class="profile-footer">
+
+<a
+href="/"
+class="btn btn-secondary">
+
+Buat Halaman Seperti Ini
+
+</a>
+
+</footer>
 
 </main>
 
 </body>
+
 </html>
-`, {
-          headers: {
-            "content-type": "text/html;charset=UTF-8"
-          }
-        });
-      }
-    }
+`;
 
-
-        // =========================
-    // 2. STATIC FILES BYPASS
-    // =========================
-    if (isStatic) {
-      return context.env.ASSETS.fetch(context.request);
-    }
-
-
-    
-    // =========================
-    // 6. NOT FOUND
-    // =========================
-    return json({
-      success: false,
-      message: "Not found"
-    }, 404);
-
-  } catch (err) {
-    return json({
-      success: false,
-      error: err.message
-    }, 500);
-  }
 }
 
-// =========================
-// HELPERS
-// =========================
+function notFoundHtml() {
 
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS"
-  };
+  return `
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Profil Tidak Ditemukan
+</title>
+
+</head>
+
+<body>
+
+<main class="not-found">
+
+<h1>
+404
+</h1>
+
+<p>
+Profil tidak ditemukan.
+</p>
+
+<br>
+
+<a href="/">
+Kembali ke Beranda
+</a>
+
+</main>
+
+</body>
+
+</html>
+`;
+
 }
 
-function json(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      "Content-Type": "application/json",
-      ...corsHeaders()
-    }
-  });
+function escapeHtml(
+  text = ""
+) {
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
 }
