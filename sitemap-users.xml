@@ -1,0 +1,17 @@
+if (url.pathname === "/sitemap-users.xml") {
+
+  const response = await fetch(
+    "https://api-biolink.lebahhack.workers.dev/sitemap-users.xml"
+  );
+
+  return new Response(
+    await response.text(),
+    {
+      status: response.status,
+      headers: {
+        "Content-Type": response.headers.get("Content-Type") || "text/plain"
+      }
+    }
+  );
+
+}
