@@ -7,7 +7,8 @@ export async function onRequest(context) {
 
   const path =
     url.pathname
-      .replace(/^\/+/, "");
+      .replace(/^\/+/, "")
+      .toLowerCase();
 
   // =========================
   // REDIRECT LINK
@@ -17,16 +18,13 @@ export async function onRequest(context) {
     url.pathname.startsWith("/r/")
   ) {
 
-    const response =
-      await fetch(
-        "https://api-biolink.lebahhack.workers.dev" +
-        url.pathname,
-        {
-          redirect: "manual"
-        }
-      );
-
-    return response;
+    return fetch(
+      "https://api-biolink.lebahhack.workers.dev" +
+      url.pathname,
+      {
+        redirect: "manual"
+      }
+    );
 
   }
 
@@ -62,7 +60,7 @@ export async function onRequest(context) {
   ];
 
   // =========================
-  // PROFILE PAGE + SEO
+  // PUBLIC PROFILE
   // =========================
 
   if (
@@ -72,94 +70,34 @@ export async function onRequest(context) {
 
     try {
 
-      const apiResponse =
+      const api =
         await fetch(
           `https://api-biolink.lebahhack.workers.dev/${path}`
         );
 
-      if (
-        !apiResponse.ok
-      ) {
+      if (!api.ok) {
 
-        return context.env.ASSETS.fetch(
-          new Request(
-            new URL(
-              "/404.html",
-              url
-            )
-          )
+        return new Response(
+          notFoundHtml(),
+          {
+            status: 404,
+            headers: {
+              "Content-Type":
+                "text/html;charset=UTF-8"
+            }
+          }
         );
 
       }
 
       const profile =
-        await apiResponse.json();
-
-      const assetResponse =
-        await context.env.ASSETS.fetch(
-          new Request(
-            new URL(
-              "/profile.html",
-              url
-            )
-          )
-        );
-
-      let html =
-        await assetResponse.text();
-
-      const title =
-        `${profile.name || profile.username} | BeeLinks`;
-
-      const description =
-        profile.bio ||
-        `Lihat semua link ${
-          profile.name ||
-          profile.username
-        }`;
-
-      const image =
-        profile.avatar ||
-        `https://api-biolink.lebahhack.workers.dev/avatar/${profile.username}`;
-
-      html =
-        html.replace(
-          /<title>.*?<\/title>/i,
-          `<title>${escapeHtml(title)}</title>`
-        );
-
-      html =
-        html.replace(
-          /<meta\s+name="description"\s+content=".*?">/i,
-          `<meta name="description" content="${escapeHtml(description)}">`
-        );
-
-      html =
-        html.replace(
-          /<meta\s+property="og:title"\s+content=".*?">/i,
-          `<meta property="og:title" content="${escapeHtml(title)}">`
-        );
-
-      html =
-        html.replace(
-          /<meta\s+property="og:description"\s+content=".*?">/i,
-          `<meta property="og:description" content="${escapeHtml(description)}">`
-        );
-
-      html =
-        html.replace(
-          /<meta\s+property="og:image"\s+content=".*?">/i,
-          `<meta property="og:image" content="${image}">`
-        );
-
-      html =
-        html.replace(
-          /<link\s+rel="canonical"\s+href=".*?">/i,
-          `<link rel="canonical" href="${url.href}">`
-        );
+        await api.json();
 
       return new Response(
-        html,
+        profileHtml(
+          profile,
+          url
+        ),
         {
           headers: {
             "Content-Type":
@@ -170,13 +108,15 @@ export async function onRequest(context) {
 
     } catch {
 
-      return context.env.ASSETS.fetch(
-        new Request(
-          new URL(
-            "/404.html",
-            url
-          )
-        )
+      return new Response(
+        notFoundHtml(),
+        {
+          status: 404,
+          headers: {
+            "Content-Type":
+              "text/html;charset=UTF-8"
+          }
+        }
       );
 
     }
@@ -190,6 +130,228 @@ export async function onRequest(context) {
   return context.env.ASSETS.fetch(
     context.request
   );
+
+}
+
+function profileHtml(
+  profile,
+  url
+) {
+
+  const title =
+    `${profile.name || profile.username} | BeeLinks`;
+
+  const description =
+    profile.bio ||
+    `Lihat semua link ${
+      profile.name ||
+      profile.username
+    }`;
+
+  const image =
+    profile.avatar ||
+    `https://api-biolink.lebahhack.workers.dev/avatar/${profile.username}`;
+
+  const links =
+    (profile.links || [])
+      .filter(
+        link =>
+          link.active !== false
+      )
+      .map(
+        link => `
+<a
+class="profile-link"
+href="/r/${profile.username}/${link.id}"
+target="_blank"
+rel="noopener noreferrer">
+
+${escapeHtml(link.title)}
+
+</a>
+`
+      )
+      .join("");
+
+  return `
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>${escapeHtml(title)}</title>
+
+<meta
+name="description"
+content="${escapeHtml(description)}">
+
+<meta
+name="robots"
+content="index,follow">
+
+<meta
+property="og:type"
+content="profile">
+
+<meta
+property="og:title"
+content="${escapeHtml(title)}">
+
+<meta
+property="og:description"
+content="${escapeHtml(description)}">
+
+<meta
+property="og:image"
+content="${image}">
+
+<meta
+property="og:url"
+content="${url.href}">
+
+<meta
+name="twitter:card"
+content="summary_large_image">
+
+<meta
+name="twitter:title"
+content="${escapeHtml(title)}">
+
+<meta
+name="twitter:description"
+content="${escapeHtml(description)}">
+
+<meta
+name="twitter:image"
+content="${image}">
+
+<link
+rel="canonical"
+href="${url.href}">
+
+<link
+rel="stylesheet"
+href="/css/style.css">
+
+<link
+rel="stylesheet"
+href="/css/profile.css">
+
+</head>
+
+<body>
+
+<main class="profile">
+
+<div class="profile-card">
+
+<img
+class="profile-avatar"
+src="${image}"
+alt="${escapeHtml(
+  profile.name ||
+  profile.username
+)}"
+loading="eager">
+
+<h1
+class="profile-name">
+
+${escapeHtml(
+  profile.name ||
+  profile.username
+)}
+
+</h1>
+
+<p
+class="profile-bio">
+
+${escapeHtml(
+  profile.bio || ""
+)}
+
+</p>
+
+</div>
+
+<div
+class="profile-links">
+
+${links}
+
+</div>
+
+<footer
+class="profile-footer">
+
+<a
+href="/"
+class="btn btn-secondary">
+
+Buat Halaman Seperti Ini
+
+</a>
+
+</footer>
+
+</main>
+
+</body>
+
+</html>
+`;
+
+}
+
+function notFoundHtml() {
+
+  return `
+<!DOCTYPE html>
+
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>
+Profil Tidak Ditemukan
+</title>
+
+</head>
+
+<body>
+
+<main class="not-found">
+
+<h1>
+404
+</h1>
+
+<p>
+Profil tidak ditemukan.
+</p>
+
+<br>
+
+<a href="/">
+Kembali ke Beranda
+</a>
+
+</main>
+
+</body>
+
+</html>
+`;
 
 }
 
