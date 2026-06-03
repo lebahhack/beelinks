@@ -33,12 +33,6 @@ export async function onRequest(context) {
       );
     }
 
-    // =========================
-    // 2. STATIC FILES BYPASS
-    // =========================
-    if (isStatic) {
-      return context.env.ASSETS.fetch(context.request);
-    }
 
     // =========================
     // RESERVED ROUTES
@@ -161,6 +155,16 @@ ${links}
       }
     }
 
+
+        // =========================
+    // 2. STATIC FILES BYPASS
+    // =========================
+    if (isStatic) {
+      return context.env.ASSETS.fetch(context.request);
+    }
+
+
+    
     // =========================
     // 6. NOT FOUND
     // =========================
