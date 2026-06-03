@@ -1,0 +1,160 @@
+/* =========================
+   MINIMAL THEME
+========================= */
+
+body{
+background:#fafafa;
+color:#111827;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile{
+max-width:680px;
+margin:0 auto;
+padding:40px 20px 60px;
+}
+
+/* =========================
+   PROFILE CARD
+========================= */
+
+.profile-card{
+text-align:center;
+margin-bottom:32px;
+}
+
+.profile-avatar{
+width:110px;
+height:110px;
+border-radius:999px;
+object-fit:cover;
+margin:0 auto 20px;
+}
+
+.profile-name{
+font-size:30px;
+font-weight:700;
+margin-bottom:8px;
+color:#111827;
+}
+
+.profile-bio{
+max-width:520px;
+margin:0 auto;
+font-size:15px;
+line-height:1.7;
+color:#6b7280;
+}
+
+/* =========================
+   LINKS
+========================= */
+
+.profile-links{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.profile-link{
+display:flex;
+align-items:center;
+justify-content:center;
+
+min-height:56px;
+padding:14px 18px;
+
+background:#ffffff;
+
+border:1px solid #e5e7eb;
+border-radius:12px;
+
+color:#111827;
+text-decoration:none;
+font-weight:500;
+
+transition:.2s;
+}
+
+.profile-link:hover{
+border-color:#111827;
+background:#f8fafc;
+}
+
+/* =========================
+   EMPTY STATE
+========================= */
+
+.profile-links p{
+text-align:center;
+padding:24px;
+color:#6b7280;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.profile-footer{
+margin-top:40px;
+text-align:center;
+color:#9ca3af;
+font-size:14px;
+}
+
+/* =========================
+   VERIFIED BADGE
+========================= */
+
+.verified-badge{
+display:inline-flex;
+align-items:center;
+justify-content:center;
+margin-left:6px;
+font-size:16px;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:768px){
+
+.profile{
+padding:30px 16px 50px;
+}
+
+.profile-avatar{
+width:96px;
+height:96px;
+}
+
+.profile-name{
+font-size:26px;
+}
+
+.profile-bio{
+font-size:14px;
+}
+
+.profile-link{
+min-height:52px;
+}
+
+}
+
+@media(max-width:480px){
+
+.profile-avatar{
+width:84px;
+height:84px;
+}
+
+.profile-name{
+font-size:22px;
+}
+
+}
