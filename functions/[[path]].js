@@ -149,8 +149,7 @@ function profileHtml(
     }`;
 
   const image =
-    profile.avatar ||
-    `https://api-biolink.lebahhack.workers.dev/avatar/${profile.username}`;
+  `${url.origin}/og/${profile.username}`;
 
 const theme =
   profile.theme ||
