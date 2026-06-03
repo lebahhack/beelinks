@@ -112,6 +112,47 @@ function avatarUrl(
 
 }
 
+
+
+/* =========================
+   THEME
+========================= */
+
+function loadTheme(theme) {
+
+  const themeName =
+    theme || "default";
+
+  let link =
+    document.getElementById(
+      "profile-theme-css"
+    );
+
+  if (!link) {
+
+    link =
+      document.createElement(
+        "link"
+      );
+
+    link.id =
+      "profile-theme-css";
+
+    link.rel =
+      "stylesheet";
+
+    document.head.appendChild(
+      link
+    );
+
+  }
+
+  link.href =
+    `/css/themes/profile-${themeName}.css`;
+
+}
+
+
 /* =========================
    RENDER PROFILE
 ========================= */
@@ -120,6 +161,10 @@ function renderProfile(
   profile
 ) {
 
+   loadTheme(
+    profile.theme
+  );
+   
   const avatar =
     document.getElementById(
       "profile-avatar"
