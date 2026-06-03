@@ -267,3 +267,19 @@ rgba(255,255,255,.2);
 color:#ffffff;
 }
 
+
+#profile-links-preview{
+margin-top:16px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.preview-link{
+padding:10px 14px;
+border-radius:12px;
+background:#fff;
+border:1px solid #e5e7eb;
+font-size:14px;
+text-align:center;
+}
