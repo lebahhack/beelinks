@@ -193,6 +193,7 @@ async function saveProfile() {
       "profile-theme"
     )
     .value
+     .trim()
      
     };
 
