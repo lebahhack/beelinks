@@ -152,6 +152,10 @@ function profileHtml(
     profile.avatar ||
     `https://api-biolink.lebahhack.workers.dev/avatar/${profile.username}`;
 
+const theme =
+  profile.theme ||
+  "default";
+  
   const links =
     (profile.links || [])
       .filter(
@@ -238,11 +242,22 @@ href="${url.href}">
 
 <link
 rel="stylesheet"
-href="/css/style.css">
+href="/css/profile.css">
 
 <link
 rel="stylesheet"
-href="/css/profile.css">
+href="/css/themes/profile-${theme}.css">
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ProfilePage",
+  "name":"${escapeHtml(profile.name || profile.username)}",
+  "description":"${escapeHtml(description)}",
+  "url":"${url.href}",
+  "image":"${image}"
+}
+</script>
 
 </head>
 
