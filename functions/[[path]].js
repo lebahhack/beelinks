@@ -36,7 +36,8 @@ export async function onRequest(context) {
     path.includes(".") ||
     path.startsWith("css/") ||
     path.startsWith("js/") ||
-    path.startsWith("assets/")
+  path.startsWith("assets/") ||
+  path.startsWith("components/")
   ) {
 
     return context.env.ASSETS.fetch(
