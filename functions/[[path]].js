@@ -54,6 +54,7 @@ export async function onRequest(context) {
     "register",
 
     "dashboard",
+    "privacy",
 
     "profile"
 
