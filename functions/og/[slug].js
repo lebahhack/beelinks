@@ -142,17 +142,40 @@ fill="rgba(255,255,255,.06)"
 stroke="rgba(255,255,255,.12)"
 stroke-width="2"/>
 
+
+
+<defs>
+
+<clipPath id="avatarClip">
+<circle
+cx="600"
+cy="190"
+r="90"/>
+</clipPath>
+
+</defs>
+
 <image
 href="${avatar}"
-x="80"
-y="140"
+x="510"
+y="100"
 width="180"
 height="180"
+clip-path="url(#avatarClip)"
 preserveAspectRatio="xMidYMid slice"/>
 
+<circle
+cx="600"
+cy="190"
+r="92"
+fill="none"
+stroke="rgba(255,255,255,.25)"
+stroke-width="4"/>
+
 <text
-x="300"
-y="200"
+x="600"
+y="340"
+text-anchor="middle"
 fill="#ffffff"
 font-size="64"
 font-weight="700"
@@ -163,10 +186,11 @@ ${escapeXML(title)}
 </text>
 
 <text
-x="300"
-y="270"
-fill="#e5e7eb"
-font-size="32"
+x="600"
+y="395"
+text-anchor="middle"
+fill="#cbd5e1"
+font-size="30"
 font-family="Arial">
 
 @${escapeXML(profile.username)}
@@ -174,17 +198,18 @@ font-family="Arial">
 </text>
 
 <foreignObject
-x="300"
-y="320"
-width="760"
-height="140">
+x="200"
+y="430"
+width="800"
+height="100">
 
 <div
 xmlns="http://www.w3.org/1999/xhtml"
 style="
 color:white;
-font-size:34px;
+font-size:30px;
 font-family:Arial;
+text-align:center;
 line-height:1.4;
 ">
 
@@ -193,6 +218,8 @@ ${escapeXML(bio)}
 </div>
 
 </foreignObject>
+
+
 
 <text
 x="80"
