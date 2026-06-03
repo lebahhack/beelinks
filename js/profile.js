@@ -1,17 +1,3 @@
-if (window.__PROFILE__) {
-
-  profile =
-    window.__PROFILE__;
-
-  renderProfile();
-  renderLinks();
-
-}
-else {
-
-  initProfile();
-
-}
 
 /* =========================
    PROFILE PAGE
