@@ -133,6 +133,11 @@ function renderProfile() {
       "sidebar-username"
     );
 
+   const bioPreview =
+  document.getElementById(
+    "profile-bio-preview"
+  );
+
   const totalLinks =
     document.getElementById(
       "total-links"
@@ -162,6 +167,13 @@ function renderProfile() {
 
   }
 
+   if (bioPreview) {
+
+  bioPreview.textContent =
+    profile.bio || "";
+
+}
+   
   if (totalLinks) {
 
     totalLinks.textContent =
@@ -253,8 +265,8 @@ function updateThemePreview() {
     );
 
   const preview =
-    document.getElementById(
-      "theme-preview"
+    document.querySelector(
+      ".profile-card"
     );
 
   if (
@@ -264,8 +276,19 @@ function updateThemePreview() {
     return;
   }
 
-  preview.className =
-    `theme-preview theme-${select.value}`;
+  preview.classList.remove(
+    "theme-default",
+    "theme-glass",
+    "theme-minimal",
+    "theme-neon",
+    "theme-card",
+    "theme-premium",
+    "theme-social"
+  );
+
+  preview.classList.add(
+    `theme-${select.value}`
+  );
 
 }
 
